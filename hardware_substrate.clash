@@ -1,0 +1,197 @@
+# =======================================================================
+
+
+{-# LANGUAGE DataKinds, TypeOperators #-}
+
+module HardwareSubstrate where
+
+import Clash.Prelude
+import Control.Monad (replicateM)
+
+-- Kvantum qubit reprezentáció
+data QubitState = Zero | One | Superposition (Signed 16) (Signed 16)
+  deriving (Generic, NFDataX)
+
+-- Kvantum regiszter
+type QuantumRegister n = Vec n QubitState
+
+-- IBM Quantum backend interfész
+data IBMQuantumBackend = IBMTorino | IBMBrisbane
+  deriving (Generic, NFDataX, Eq)
+
+ibmQubitCount :: IBMQuantumBackend -> Unsigned 8
+ibmQubitCount IBMTorino = 133
+ibmQubitCount IBMBrisbane = 127
+
+-- Kvantum gate típusok
+data QuantumGate
+  = Hadamard (Index 256)
+  | PauliX (Index 256)
+  | PauliY (Index 256)
+  | PauliZ (Index 256)
+  | CNOT (Index 256) (Index 256)
+  | Rotation (Index 256) (Signed 16) -- qubit, angle (16-bit fixed point)
+  deriving (Generic, NFDataX)
+
+-- Kvantum áramkör
+type QuantumCircuit n = Vec n QuantumGate
+
+-- Protein folding specifikus kvantum áramkör generátor
+proteinFoldingCircuit
+  :: KnownNat n
+  => SNat n
+  -> Vec n (Unsigned 8) -- amino acid sequence
+  -> QuantumCircuit (n * 3) -- 3D koordináták
+proteinFoldingCircuit seqLen aminoSequence =
+  initSuperposition ++
+  groverIterations ++
+  measurements
+  where
+    qubits = snatToNum seqLen * 3
+
+    initSuperposition = map Hadamard (iterateI qubits (+1) 0)
+
+    groverIterations = concatMap groverIteration (replicate iterations ())
+      where
+        iterations = truncateB $ fromIntegral $
+          floor $ pi / 4 * sqrt (fromIntegral $ 2 ^ qubits)
+
+    measurements = map (\i -> PauliZ i) (iterateI qubits (+1) 0)
+
+-- Grover iteráció implementáció
+groverIteration :: KnownNat n => () -> QuantumCircuit n
+groverIteration _ = oracle ++ diffuser
+  where
+    oracle = map (\i -> Rotation i (truncateB energyPhase)) qubits
+    diffuser = map Hadamard qubits ++
+               map PauliX qubits ++
+               [multiControlledZ qubits] ++
+               map PauliX qubits ++
+               map Hadamard qubits
+    qubits = iterateI d256 (+1) 0
+    energyPhase = -32768 -- -π in 16-bit fixed point
+
+-- Multi-controlled Z gate
+multiControlledZ :: Vec n (Index 256) -> QuantumGate
+multiControlledZ controls =
+  case length controls of
+    0 -> PauliZ 0
+    1 -> PauliZ (head controls)
+    _ -> CNOT (head controls) (last controls) -- Simplified
+
+-- Protein energia oracle hardware implementáció
+proteinEnergyOracle
+  :: Vec n (Unsigned 8) -- amino acid types
+  -> Vec n (Signed 32, Signed 32, Signed 32) -- coordinates
+  -> Signed 32 -- energy in fixed point
+proteinEnergyOracle aminoTypes coordinates =
+  fold (+) 0 $ zipWith pairwiseEnergy coordinatePairs aminoPairs
+  where
+    coordinatePairs = [(i,j) | i <- coordinates, j <- coordinates, i /= j]
+    aminoPairs = [(i,j) | i <- aminoTypes, j <- aminoTypes, i /= j]
+
+    pairwiseEnergy (coord1, coord2) (amino1, amino2) =
+      let distance = euclideanDistance coord1 coord2
+          sigma = vanDerWaalsRadius amino1 + vanDerWaalsRadius amino2
+          epsilon = truncateB $ sqrt $
+            fromIntegral (aminoMass amino1 * aminoMass amino2)
+      in lennardJonesPotential distance sigma epsilon
+
+-- Van der Waals sugarak és tömegek lookup táblák
+vanDerWaalsRadius :: Unsigned 8 -> Signed 16
+vanDerWaalsRadius aminoCode =
+  case aminoCode of
+    1 -> 3776  -- Alanine (1.88 Å in fixed point)
+    2 -> 5376  -- Arginine (2.68 Å)
+    3 -> 5171  -- Asparagine (2.58 Å)
+    _ -> 4000  -- Default 2.0 Å
+
+aminoMass :: Unsigned 8 -> Unsigned 16
+aminoMass aminoCode =
+  case aminoCode of
+    1 -> 89    -- Alanine 89.09 Da
+    2 -> 174   -- Arginine 174.20 Da
+    3 -> 132   -- Asparagine 132.12 Da
+    _ -> 120   -- Default 120 Da
+
+-- Euklideszi távolság számítás
+euclideanDistance
+  :: (Signed 32, Signed 32, Signed 32)
+  -> (Signed 32, Signed 32, Signed 32)
+  -> Signed 32
+euclideanDistance (x1,y1,z1) (x2,y2,z2) =
+  truncateB $ sqrt $ fromIntegral $
+    (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) + (z2-z1)*(z2-z1)
+
+-- Lennard-Jones potenciál
+lennardJonesPotential :: Signed 32 -> Signed 16 -> Signed 16 -> Signed 32
+lennardJonesPotential r sigma epsilon =
+  let sigmaOverR = sigma `div` (truncateB r)
+      term6 = sigmaOverR * sigmaOverR * sigmaOverR *
+              sigmaOverR * sigmaOverR * sigmaOverR
+      term12 = term6 * term6
+  in (extend epsilon) * 4 * (term12 - term6)
+
+-- Top level kvantum protein folding processzor
+quantumProteinProcessor
+  :: Clock System
+  -> Reset System
+  -> Enable System
+  -> Signal System (Vec 64 (Unsigned 8)) -- input sequence
+  -> Signal System IBMQuantumBackend     -- backend selection
+  -> Signal System Bool                  -- start signal
+  -> ( Signal System Bool                -- ready
+     , Signal System (Vec 192 (Signed 32)) -- output coordinates
+     , Signal System (Signed 32)         -- energy
+     )
+quantumProteinProcessor clk rst en inputSeq backend start =
+  (ready, outputCoords, energy)
+  where
+    (ready, outputCoords, energy) =
+      mealyB quantumProcessorT (Idle, repeat 0, 0)
+             (bundle (inputSeq, backend, start))
+
+-- Kvantum processzor állapotgép
+data ProcessorState = Idle | Computing | Measuring | Done
+  deriving (Generic, NFDataX, Eq)
+
+quantumProcessorT
+  :: (ProcessorState, Vec 192 (Signed 32), Signed 32)
+  -> (Vec 64 (Unsigned 8), IBMQuantumBackend, Bool)
+  -> ((ProcessorState, Vec 192 (Signed 32), Signed 32),
+      (Bool, Vec 192 (Signed 32), Signed 32))
+quantumProcessorT (state, coords, energy) (seq, backend, start) =
+  case state of
+    Idle | start ->
+      ((Computing, coords, energy), (False, coords, energy))
+    Computing ->
+      let circuit = proteinFoldingCircuit d64 seq
+          newCoords = executeQuantumCircuit circuit seq backend
+          newEnergy = proteinEnergyOracle seq (unflatten newCoords)
+      in ((Measuring, newCoords, newEnergy), (False, newCoords, newEnergy))
+    Measuring ->
+      ((Done, coords, energy), (False, coords, energy))
+    Done ->
+      ((Idle, coords, energy), (True, coords, energy))
+    _ ->
+      ((state, coords, energy), (False, coords, energy))
+
+-- Kvantum áramkör végrehajtás szimuláció (hardware-ben implementált)
+executeQuantumCircuit
+  :: QuantumCircuit (64 * 3)
+  -> Vec 64 (Unsigned 8)
+  -> IBMQuantumBackend
+  -> Vec 192 (Signed 32)
+executeQuantumCircuit circuit seq backend =
+  -- Hardware implementáció itt
+  repeat 0 -- Placeholder: valós hardverben kvantum végrehajtás
+
+-- Vektor unflatten 192 elemből 64x3 koordinátává
+unflatten :: KnownNat n => Vec (n * 3) (Signed 32) -> Vec n (Signed 32, Signed 32, Signed 32)
+unflatten coords = map (\i -> (coords !! (i*3), coords !! (i*3+1), coords !! (i*3+2)))
+                       (iterateI d64 (+1) 0)
+
+# =======================================================================
+
+
+# =======================================================================

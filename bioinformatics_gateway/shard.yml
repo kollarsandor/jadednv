@@ -1,0 +1,53 @@
+# =======================================================================
+
+name: bioinformatics_gateway
+version: 1.0.0
+
+authors:
+  - Bioinformatics Platform Team
+
+description: |
+  High-performance Crystal API gateway for state-of-the-art
+  bioinformatics platform integrating NVIDIA BioNeMo models
+
+targets:
+  bioinformatics_gateway:
+    main: src/bioinformatics_gateway.cr
+
+crystal: ">= 1.0.0"
+
+license: MIT
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+    version: ~> 1.4.0
+
+  crest:
+    github: mamantoha/crest
+    version: ~> 1.3.12
+
+  json:
+    github: crystal-lang/json
+
+  uuid:
+    github: crystal-lang/uuid
+
+  redis:
+    github: stefanwille/crystal-redis
+    version: ~> 2.9.1
+
+  jwt:
+    github: crystal-community/jwt
+    version: ~> 1.6.0
+
+development_dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
+  ameba:
+    github: crystal-ameba/ameba
+
+# =======================================================================
+
+
+# =======================================================================

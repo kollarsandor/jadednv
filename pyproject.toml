@@ -1,0 +1,28 @@
+# =======================================================================
+
+[project]
+name = "repl-nix-workspace"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "asyncio>=4.0.0",
+    "fastapi>=0.116.2",
+    "httpx>=0.28.1",
+    "ionq>=0.0.0a7",
+    "modal>=1.1.4",
+    "numpy>=2.3.3",
+    "nvidia-ml-py>=13.580.82",
+    "pydantic>=1.10.23",
+    "redis>=6.4.0",
+    "scipy>=1.16.2",
+    "upstash-redis>=1.4.0",
+    "uvicorn>=0.36.0",
+    "websockets>=15.0.1",
+]
+
+# =======================================================================
+
+
+# =======================================================================

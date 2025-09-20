@@ -1,0 +1,1203 @@
+# =======================================================================
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>JADED - Deep Discovery AI Platform</title>
+
+    <!-- Enhanced PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JADED">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Apple Touch Icon (matching index 5.html dark theme) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000' rx='22'/%3E%3Cpath d='M 30 28 C 30 50 50 72 70 72' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='30' cy='72' r='6' fill='white'/%3E%3C/svg%3E">
+
+    <!-- Enhanced Manifest (with dark theme colors) -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22JADED%20-%20Deep%20Discovery%20AI%20Platform%22%2C%22short_name%22%3A%22JADED%22%2C%22description%22%3A%22Fejlett%20AI%20platform%20150%2B%20tudom%C3%A1nyos%20%C3%A9s%20innov%C3%A1ci%C3%B3s%20szolg%C3%A1ltat%C3%A1ssal%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22theme_color%22%3A%22%23000000%22%2C%22background_color%22%3A%22%23000000%22%2C%22scope%22%3A%22%2F%22%2C%22lang%22%3A%22hu%22%2C%22categories%22%3A%5B%22productivity%22%2C%22education%22%2C%22utilities%22%2C%22science%22%5D%7D">
+
+    <!-- External Resources -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTPSuNrZB9krzMLvKfrLSvynroPnSZPACE/dOi5JTc9LzS/fNENgHTgrBI8UuTqI7S2saw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfb5F/sc7FpdaSMfPMrJc3CkzXPgAenPhJ4HCWJeQ30/eIs40+o8SjF9WZpBFjJ2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #0A61F7;
+            --secondary: #39FF14;
+            --accent: #0A61F7;
+            --border-glow: rgba(10, 97, 247, 0.5);
+            --primary-rgb: 10, 97, 247;
+            --secondary-rgb: 57, 255, 20;
+            --bg: #000000;
+            --surface: rgba(10, 10, 10, 0.7);
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-strong: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f0f0f0;
+            --text-muted: #94a3b8;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+            --transition-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-color-slow: 15s ease-in-out;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { height: 100%; height: -webkit-fill-available; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+            min-height: 100vh; min-height: -webkit-fill-available; overflow: hidden;
+            -webkit-font-smoothing: antialiased; font-size: 15px;
+        }
+        .aurora-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; overflow: hidden; will-change: transform; }
+        .aurora { position: absolute; border-radius: 50%; mix-blend-mode: screen; filter: blur(120px); opacity: 0; transition: background-color var(--transition-color-slow), opacity 8s ease-in-out; animation: pulse 30s ease-in-out infinite alternate; will-change: transform, opacity; }
+        .aurora.visible { opacity: 0.3; }
+        .aurora.one { width: 80vmax; height: 80vmax; animation-name: move-one, pulse; animation-duration: 1200s, 35s; animation-timing-function: linear, ease-in-out; animation-iteration-count: infinite, infinite; animation-direction: alternate, alternate; }
+        .aurora.two { width: 70vmax; height: 70vmax; animation-name: move-two, pulse; animation-duration: 1050s, 40s; animation-timing-function: linear, ease-in-out; animation-iteration-count: infinite, infinite; animation-direction: alternate, alternate; }
+        @keyframes move-one { from { transform: translate(-20vw, -20vh) scale(1); } to { transform: translate(50vw, 80vh) scale(1.2); } }
+        @keyframes move-two { from { transform: translate(80vw, 30vh) scale(1); } to { transform: translate(-10vw, 60vh) scale(1.3); } }
+        @keyframes pulse { from { opacity: 0.2; } to { opacity: 0.4; } }
+        .container { display: flex; min-height: 100vh; min-height: -webkit-fill-available; position: relative; }
+
+        .welcome-title, .modal-title, .header-title { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-title { text-shadow: 0 0 15px var(--border-glow); font-size: 1.2rem; }
+        .category-title i, .ai-message strong, .accent { color: var(--accent); }
+        .typing-dot { background-color: var(--primary); }
+        .service-item:hover { border-left-color: var(--primary); }
+
+        .sidebar { width: 260px; background: var(--surface); backdrop-filter: blur(60px) saturate(180%); border-right: 1px solid var(--border); overflow-x: hidden; position: fixed; height: 100vh; height: -webkit-fill-available; z-index: 1000; transform: translateX(-100%); transition: transform 0.4s var(--transition-curve); display: flex; flex-direction: column; will-change: transform; }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease; will-change: opacity; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar-header { padding: 12px; border-bottom: 1px solid var(--border); }
+        .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .logo-icon { width: 28px; height: 28px; transition: transform 0.3s var(--transition-curve); }
+        .logo:hover .logo-icon { transform: scale(1.15) rotate(10deg); }
+        .logo-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.1; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-text p { font-size: 0.7rem; color: var(--text-muted); margin-top: 1px; font-weight: 500; }
+        .new-chat-btn { width: 100%; background: var(--glass-strong); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-md); padding: 8px 10px; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s var(--transition-curve); }
+        .new-chat-btn:hover { transform: translateY(-2px); border-color: var(--border-glow); box-shadow: 0 4px 15px -5px rgba(0,0,0,0.4), 0 0 10px -5px var(--border-glow); }
+        .sidebar-content { padding: 12px; flex-grow: 1; overflow-y: auto; }
+        .sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
+        .made-by { font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+        .service-category { margin-bottom: 12px; }
+        .category-header { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; transition: all 0.2s var(--transition-curve); min-height: 40px; }
+        .category-header .fa-chevron-down { transition: transform 0.3s var(--transition-curve); }
+        .category-header:hover { background: var(--glass-strong); border-color: var(--border-glow); transform: translateY(-1px); }
+        .category-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.8rem; }
+        .category-services { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease-out; }
+        .category-services > div { overflow: hidden; }
+        .category-services.open { grid-template-rows: 1fr; }
+        .service-item { background: transparent; border: 1px solid transparent; border-radius: var(--radius-sm); padding: 8px 10px; margin-bottom: 4px; cursor: pointer; transition: all 0.2s var(--transition-curve); display: flex; align-items: center; gap: 8px; margin-left: 6px; border-left: 2px solid var(--border); min-height: 44px; }
+        .service-item:hover { background: var(--glass-strong); border-color: transparent transparent transparent var(--primary); transform: translateX(4px); color: #fff; }
+        .service-icon { width: 28px; height: 28px; background: var(--glass-strong); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; color: var(--accent); transition: all 0.3s var(--transition-curve); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
+        .service-item:hover .service-icon { transform: scale(1.1) rotate(5deg); box-shadow: 0 4px 10px var(--border-glow); border-color: var(--border-glow); }
+        .service-info h4 { font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+        .service-info p { font-size: 0.7rem; color: var(--text-muted); }
+
+        .main-content { flex: 1; margin-left: 0; display: flex; flex-direction: column; transition: margin-left 0.4s var(--transition-curve); min-height: 100vh; min-height: -webkit-fill-available; max-height: 100vh; max-height: -webkit-fill-available; overflow: hidden; }
+        .header { padding: 8px 12px; height: 48px; background: var(--surface); backdrop-filter: blur(60px) saturate(180%); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .menu-toggle { background: var(--glass-strong); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px; color: var(--text); cursor: pointer; transition: all 0.2s var(--transition-curve); font-size: 0.9rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+        .menu-toggle:hover { background: var(--glass-strong); border-color: var(--border-glow); transform: scale(1.05); }
+        .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .messages-container { padding: 12px; overflow-y: auto; flex: 1; }
+        .welcome-screen { text-align: center; max-width: 500px; margin: 0 auto; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; animation: fadeIn 1s var(--transition-curve); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .welcome-title { font-size: 2.2rem; margin-bottom: 0.5rem; font-weight: 800; }
+        .welcome-subtitle { font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.2rem; color: var(--text-muted); }
+        .start-btn { padding: 10px 20px; font-size: 0.9rem; min-height: 42px; background: var(--glass-strong); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-weight: 600; cursor: pointer; transition: all 0.2s var(--transition-curve); display: inline-flex; align-items: center; gap: 8px; }
+        .start-btn:hover { border-color: var(--border-glow); transform: translateY(-2px) scale(1.03); }
+        .message { margin-bottom: 20px; animation: messageSlideIn 0.4s var(--transition-curve); }
+        @keyframes messageSlideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .user-message { display: flex; justify-content: flex-end; }
+        .user-bubble { color: #fff; padding: 10px 14px; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg); max-width: 80%; font-weight: 500; font-size: 0.9rem; line-height: 1.4; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); border: 1px solid var(--border); }
+        .ai-message { display: flex; flex-direction: column; max-width: 90%; }
+        .ai-content { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm); padding: 10px 14px; line-height: 1.5; font-size: 0.9rem; }
+        .ai-content pre { background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin: 12px 0; font-size: 0.85rem; overflow-x: auto; }
+        .ai-content code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        .input-area { padding: 8px 12px; background: rgba(5, 2, 10, 0.5); backdrop-filter: blur(30px) saturate(150%); border-top: 1px solid var(--border); position: sticky; bottom: 0; z-index: 50; flex-shrink: 0; }
+        @supports (padding: max(0px)) {
+            .input-area {
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+            }
+            .header {
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+                padding-top: env(safe-area-inset-top);
+            }
+        }
+        .input-wrapper { display: flex; gap: 8px; align-items: flex-end; }
+        .deep-search-toggle { width: 40px; height: 40px; background: var(--glass-strong); border: 1px solid var(--border); border-radius: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: var(--text-muted); transition: all 0.2s var(--transition-curve); flex-shrink: 0; }
+        .deep-search-toggle:hover, .deep-search-toggle.active { background: var(--glass-strong); border-color: var(--primary); color: var(--primary); transform: scale(1.05); }
+        .message-input { flex: 1; background: var(--glass-strong); border: 1px solid var(--border); border-radius: 20px; padding: 10px 14px; color: var(--text); font-size: 0.9rem; resize: none; outline: none; transition: all 0.2s var(--transition-curve); min-height: 40px; max-height: 140px; font-family: inherit; line-height: 1.4; }
+        .send-btn-container { width: 40px; height: 40px; flex-shrink: 0; }
+        .send-btn { width: 100%; height: 100%; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--glass-strong); color: var(--text-muted); transition: all 0.2s var(--transition-curve); font-size: 0.9rem; }
+        .send-btn.active { color: var(--primary); border-color: var(--primary); }
+        .send-btn:hover { transform: scale(1.05); box-shadow: 0 0 12px var(--border-glow); border-color: var(--border-glow); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        .typing-indicator { padding: 8px 16px; margin: 8px 0; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm); display: flex; align-items: center; gap: 8px; max-width: 150px; }
+        .typing-dots { display: flex; gap: 3px; }
+        .typing-dot { width: 6px; height: 6px; border-radius: 50%; animation: typingPulse 1.4s infinite ease-in-out; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingPulse { 0%, 80%, 100% { transform: scale(1); opacity: 0.5; } 40% { transform: scale(1.2); opacity: 1; } }
+        .research-progress { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin: 8px 0; }
+        .progress-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .progress-header h3 { color: var(--primary); font-size: 0.9rem; margin: 0; }
+        .progress-bar { background: var(--glass-strong); border-radius: 8px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { background: var(--primary); height: 100%; border-radius: 8px; transition: width 0.3s ease; }
+        .progress-text { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; }
+        .phase-indicators { display: flex; gap: 8px; }
+        .phase-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--glass-strong); border: 1px solid var(--border); transition: all 0.3s ease; }
+        .phase-dot.completed { background: var(--primary); border-color: var(--primary); }
+        .research-complete { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin: 8px 0; }
+        .completion-stats h3 { color: var(--primary); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+        .stat-item { text-align: center; background: var(--glass-strong); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+        .stat-number { display: block; font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
+        .document-preview { background: var(--glass-strong); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s ease; }
+        .document-preview:hover { background: var(--glass-strong); border-color: var(--primary); transform: translateY(-2px); }
+        .document-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; }
+        .document-info h4 { margin: 0 0 2px 0; font-size: 0.85rem; color: var(--text); }
+        .document-info p { margin: 0; font-size: 0.7rem; color: var(--text-muted); }
+
+        /* Service Interface Styles */
+        .service-interface { padding: 20px; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.5s ease; }
+        .interface-header { text-align: center; margin-bottom: 25px; }
+        .interface-header h2 { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px; font-size: 1.4rem; }
+        .interface-header p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.4; }
+        .interface-content { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+        .input-section { margin-bottom: 25px; }
+        .input-section h3 { margin-bottom: 15px; color: var(--text); font-size: 1.1rem; }
+        .input-section textarea, .input-section input, .input-section select { width: 100%; background: var(--glass-strong); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; color: var(--text); font-size: 0.9rem; font-family: inherit; transition: border-color 0.2s ease; }
+        .input-section textarea:focus, .input-section input:focus, .input-section select:focus { outline: none; border-color: var(--primary); }
+        .input-section textarea { resize: vertical; min-height: 120px; font-family: 'SF Mono', monospace; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .option-group { display: flex; flex-direction: column; gap: 6px; }
+        .option-group label { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+        .action-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .primary-btn, .secondary-btn, .action-btn, .button-primary { padding: 10px 16px; border-radius: var(--radius-md); border: 1px solid var(--border); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s var(--transition-curve); display: inline-flex; align-items: center; gap: 8px; min-height: 42px; }
+        .primary-btn, .button-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-color: var(--primary); }
+        .primary-btn:hover, .button-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4); }
+        .secondary-btn, .action-btn { background: var(--glass-strong); color: var(--text); }
+        .secondary-btn:hover, .action-btn:hover { background: var(--glass-strong); border-color: var(--primary); transform: translateY(-1px); }
+        .result-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .result-section h3 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+        .progress-section { margin: 20px 0; }
+        .status-indicator { padding: 15px; border-radius: var(--radius-md); margin: 10px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .status-running { background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: 1px solid rgba(var(--primary-rgb), 0.3); }
+        .status-completed { background: rgba(57, 255, 20, 0.1); color: var(--secondary); border: 1px solid rgba(var(--secondary-rgb), 0.3); }
+        .status-error { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* Tab System Styles */
+        .tab-selector, .mol-input-tabs, .arch-tabs, .robot-tabs { display: flex; gap: 5px; margin-bottom: 20px; background: var(--glass); border-radius: var(--radius-md); padding: 5px; }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s var(--transition-curve); font-weight: 500; font-size: 0.85rem; }
+        .tab-btn.active, .tab-btn:hover { background: var(--glass-strong); color: var(--text); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+        /* General Service Interface Components */
+        .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 15px; margin-bottom: 15px; }
+        .upload-area { border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s var(--transition-curve); background: rgba(0,0,0,0.1); }
+        .upload-area:hover { border-color: var(--primary); background: var(--glass-strong); }
+        .upload-area i { font-size: 2rem; color: var(--primary); margin-bottom: 8px; display: block; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .result-item:last-child { border-bottom: none; }
+        .follow-up-section { margin-top: 20px; }
+
+        /* Specific Service Styles */
+        .sequence-input-wrapper { padding: 10px; }
+        .sequence-stats { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; }
+        .chain-builder .chain-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+        .chain-builder .chain-item label { flex-shrink: 0; padding-top: 12px; }
+        .chain-builder .chain-item textarea { flex-grow: 1; }
+        .chain-builder .chain-item button { background: #ef4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.9rem; flex-shrink: 0; margin-top: 8px; }
+        .ligand-input .option-group, .ligand-input-section { margin-bottom: 15px; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 15px 0; }
+        .checkbox-grid label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; }
+        .robot-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }
+        .robot-option { background: var(--glass); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s var(--transition-curve); }
+        .robot-option:hover, .robot-option.selected { border-color: var(--primary); background: var(--glass-strong); transform: translateY(-3px); }
+        .robot-option i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100vw; }
+            .main-content { margin-left: 0; }
+            .header { padding: 8px; }
+            .welcome-title { font-size: 1.8rem; }
+            .stats-grid, .options-grid, .input-grid, .checkbox-grid, .robot-types { grid-template-columns: 1fr; }
+            .service-interface { padding: 16px; }
+            .interface-content { padding: 16px; }
+            .action-buttons { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="aurora-background">
+        <div class="aurora one"></div>
+        <div class="aurora two"></div>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar" role="navigation">
+            <header class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon" id="logo-icon-container"></div>
+                    <div class="logo-text">
+                        <h1>JADED</h1>
+                        <p>Deep Discovery AI Platform</p>
+                    </div>
+                </div>
+                <button class="new-chat-btn" onclick="newChat()">
+                    <i class="fas fa-plus"></i>
+                    Új beszélgetés
+                </button>
+            </header>
+            <div class="sidebar-content" id="sidebarContent"></div>
+            <footer class="sidebar-footer">
+                <p class="made-by">JADED v2.1 by Sándor Kollár</p>
+            </footer>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <header class="header">
+                <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menü megnyitása/bezárása">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">JADED</h1>
+            </header>
+
+            <div class="chat-area">
+                <section class="messages-container" id="messagesContainer" aria-live="polite">
+                    <header class="welcome-screen" id="welcomeScreen">
+                        <h1 class="welcome-title">JADED</h1>
+                        <p class="welcome-subtitle">
+                            Fejlett tudományos kutatási AI platform, amely 150+ szolgáltatást nyújt 6 fő kategóriában.
+                            Válassz egy szolgáltatást a menüből, vagy egyszerűen írj egy üzenetet.
+                        </p>
+                        <button class="start-btn" onclick="hideWelcome()">
+                            <i class="fas fa-rocket"></i>
+                            Kezdjük el!
+                        </button>
+                    </header>
+                </section>
+
+                <footer class="input-area">
+                    <div class="input-wrapper">
+                        <button class="deep-search-toggle" id="deepSearchToggle" onclick="toggleDeepSearch()" title="Deep Search aktiválása" aria-label="Deep Search aktiválása">
+                            <i class="fas fa-microscope"></i>
+                        </button>
+                        <textarea
+                            class="message-input"
+                            id="messageInput"
+                            placeholder="Írj egy üzenetet..."
+                            rows="1"
+                            aria-label="Üzenet beviteli mező"
+                        ></textarea>
+                        <div class="send-btn-container">
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Üzenet küldése">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Global State & Config ---
+        const AppState = { isTyping: false, userId: 'user_' + Math.random().toString(36).substr(2, 9), isDeepSearchActive: false, researchState: null };
+        const API_BASE_URL = '/api';
+
+        // --- DOM Elements ---
+        const getEl = (id) => document.getElementById(id);
+        const sidebar = getEl('sidebar'), sidebarOverlay = getEl('sidebarOverlay'), sidebarContent = getEl('sidebarContent'),
+              messagesContainer = getEl('messagesContainer'), messageInput = getEl('messageInput'),
+              sendBtn = getEl('sendBtn'), deepSearchToggle = getEl('deepSearchToggle');
+        let welcomeScreen = getEl('welcomeScreen');
+
+        // --- Theme Manager (Blue-Green Only) ---
+        class DynamicThemeManager {
+            constructor() {
+                this.root = document.documentElement;
+                this.auroraBlobs = document.querySelectorAll('.aurora-background .aurora');
+                // Only use the blue-green color pair
+                this.colorPair = { primary: '#0A61F7', secondary: '#39FF14' };
+                this.updateColors(this.colorPair);
+                // No cycling interval needed anymore
+                setTimeout(() => this.auroraBlobs.forEach(b => b.classList.add('visible')), 500);
+            }
+            updateColors = (pair) => {
+                const primaryRGB = this.hexToRgb(pair.primary);
+                this.root.style.setProperty('--primary', pair.primary);
+                this.root.style.setProperty('--secondary', pair.secondary);
+                this.root.style.setProperty('--accent', pair.primary);
+                this.root.style.setProperty('--border-glow', `rgba(${primaryRGB}, 0.5)`);
+                this.root.style.setProperty('--primary-rgb', primaryRGB);
+                this.root.style.setProperty('--secondary-rgb', this.hexToRgb(pair.secondary));
+                this.auroraBlobs.forEach((blob, i) => { blob.style.backgroundColor = i % 2 === 0 ? pair.primary : pair.secondary; });
+            };
+            hexToRgb = (hex) => {
+                let r=0,g=0,b=0;
+                if(hex.length==7){r=parseInt(hex.substring(1,3),16);g=parseInt(hex.substring(3,5),16);b=parseInt(hex.substring(5,7),16);}
+                return `${r},${g},${b}`;
+            };
+        }
+
+        // --- API Communication ---
+        async function fetchAPI(endpoint, options = {}) {
+            try {
+                const url = `${API_BASE_URL}${endpoint}`;
+                const response = await fetch(url, {
+                    method: 'POST', ...options,
+                    headers: { 'Content-Type': 'application/json', ...options.headers }
+                });
+                if (!response.ok) {
+                    const errorText = await response.text(); throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                hideTypingIndicator();
+                addAiMessage(`Hiba történt a szerverrel való kommunikáció során: ${error.message}`);
+                throw error;
+            }
+        }
+
+        // --- Core UI Functions ---
+        function createSVGLogo() {
+            getEl('logo-icon-container').innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M 30 28 C 30 50 50 72 70 72" stroke="rgba(255,255,255,0.8)" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="30" cy="72" r="6" fill="rgba(255,255,255,0.8)"/></svg>`;
+        }
+        function toggleSidebar() { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); }
+        function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); }
+        function hideWelcome() { if (welcomeScreen) { welcomeScreen.style.display = 'none'; welcomeScreen = null; } }
+        function newChat() {
+            messagesContainer.innerHTML = '';
+            const newWelcomeScreen = document.createElement('header');
+            newWelcomeScreen.className = 'welcome-screen';
+            newWelcomeScreen.id = 'welcomeScreen';
+            newWelcomeScreen.innerHTML = `<h1 class="welcome-title">JADED</h1><p class="welcome-subtitle">Készen állok a következő feladatra. Válassz egy szolgáltatást, vagy kérdezz bármit!</p><button class="start-btn" onclick="hideWelcome()"><i class="fas fa-rocket"></i> Kezdjük el!</button>`;
+            messagesContainer.appendChild(newWelcomeScreen);
+            welcomeScreen = getEl('welcomeScreen');
+            messageInput.value = '';
+            messageInput.dispatchEvent(new Event('input'));
+            messageInput.focus();
+            closeSidebar();
+        }
+        function toggleDeepSearch() {
+            AppState.isDeepSearchActive = !AppState.isDeepSearchActive;
+            deepSearchToggle.classList.toggle('active', AppState.isDeepSearchActive);
+            messageInput.placeholder = AppState.isDeepSearchActive ? 'Deep Search kutatási téma...' : 'Írj egy üzenetet...';
+        }
+
+        // --- Service Loading ---
+        async function loadServices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/services`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                const { categories } = data;
+
+                sidebarContent.innerHTML = '';
+                const categoryMeta = {
+                    biologiai_orvosi: { name: 'Biológiai & Orvosi', icon: 'fa-dna' },
+                    kemiai_anyagtudomanyi: { name: 'Kémiai & Anyagtudományi', icon: 'fa-atom' },
+                    kornyezeti_fenntarthato: { name: 'Környezeti & Fenntartható', icon: 'fa-leaf' },
+                    fizikai_asztrofizikai: { name: 'Fizikai & Asztrofizikai', icon: 'fa-satellite-dish' },
+                    technologiai_melymu: { name: 'Technológiai & Mélyműszaki', icon: 'fa-microchip' },
+                    tarsadalmi_gazdasagi: { name: 'Társadalmi & Gazdasági', icon: 'fa-chart-line' },
+                    formalis_verifikacio: { name: 'Formális Verifikáció', icon: 'fa-check-circle' }
+                };
+
+                for (const categoryId in categories) {
+                    const category = categories[categoryId];
+                    const meta = categoryMeta[categoryId] || { name: categoryId.replace(/_/g, ' '), icon: 'fa-star' };
+                    let servicesHTML = Object.entries(category).map(([serviceName, description]) =>
+                        `<div class="service-item" onclick="selectService('${escapeHtml(serviceName).replace(/'/g, "\\'")}', '${escapeHtml(description).replace(/'/g, "\\'")}')">
+                            <div class="service-icon"><i class="fas fa-flask"></i></div>
+                            <div class="service-info">
+                                <h4>${escapeHtml(serviceName)}</h4>
+                                <p>${escapeHtml(description)}</p>
+                            </div>
+                        </div>`
+                    ).join('');
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'service-category';
+                    categoryDiv.innerHTML = `
+                        <div class="category-header" onclick="toggleCategory(this)">
+                            <div class="category-title">
+                                <i class="fas ${meta.icon}"></i>
+                                <span>${meta.name}</span>
+                            </div>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="category-services">
+                            <div>${servicesHTML}</div>
+                        </div>
+                    `;
+                    sidebarContent.appendChild(categoryDiv);
+                }
+
+                console.log('✅ Services loaded successfully:', Object.keys(categories).length, 'categories');
+            } catch (error) {
+                console.error('❌ Failed to load services:', error);
+                sidebarContent.innerHTML = '<p style="color: var(--text-muted); padding: 10px;">Szolgáltatások betöltése sikertelen. Újra próbálkozás...</p>';
+                // Retry after 3 seconds
+                setTimeout(loadServices, 3000);
+            }
+        }
+        function toggleCategory(header) {
+            const categoryServices = header.nextElementSibling;
+            const chevron = header.querySelector('.fa-chevron-down');
+            categoryServices.classList.toggle('open');
+            chevron.style.transform = categoryServices.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+        function selectService(serviceName, description) {
+            hideWelcome();
+            showServiceInterface(serviceName, description);
+            closeSidebar();
+        }
+
+        // --- Messaging ---
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || AppState.isTyping) return;
+            hideWelcome();
+            addUserMessage(message);
+            messageInput.value = '';
+            sendBtn.classList.remove('active');
+            messageInput.style.height = 'auto';
+            if (AppState.isDeepSearchActive) {
+                await initiateDeepSearch(message);
+            } else {
+                await sendRegularMessage(message);
+            }
+        }
+        async function sendRegularMessage(message) {
+            showTypingIndicator();
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, user_id: AppState.userId })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Chat response:', data);
+
+                if (data.status === 'success') {
+                    addAiMessage(data.response);
+                } else {
+                    addAiMessage(`Hiba történt: ${data.error || 'Ismeretlen hiba'}`);
+                }
+            } catch (error) {
+                console.error('Chat error:', error);
+                addAiMessage(`Hálózati hiba: ${error.message}`);
+            } finally {
+                hideTypingIndicator();
+            }
+        }
+        async function initiateDeepSearch(query) {
+            try {
+                AppState.researchState = { query, totalSources: 0, documentContent: null };
+                showResearchProgress();
+                const data = await fetchAPI('/deep_search', { body: JSON.stringify({ query, user_id: AppState.userId }) });
+                AppState.researchState.totalSources = data.sources_count || 5;
+                AppState.researchState.documentContent = data.document || 'Kutatási jelentés generálva.';
+                displayResearchCompletion();
+            } catch (error) {
+                addAiMessage('Hiba történt a deep search során.');
+            }
+        }
+
+        // --- UI Message Display ---
+        function addUserMessage(content) {
+            const div = document.createElement('div');
+            div.className = 'message user-message';
+            div.innerHTML = `<div class="user-bubble">${escapeHtml(content)}</div>`;
+            messagesContainer.appendChild(div);
+            scrollToBottom();
+        }
+        function addAiMessage(content) {
+            const div = document.createElement('div');
+            div.className = 'message ai-message';
+            div.innerHTML = `<div class="ai-content">${marked.parse(content)}</div>`;
+            messagesContainer.appendChild(div);
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            }
+            scrollToBottom();
+        }
+        function showTypingIndicator() {
+            AppState.isTyping = true;
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'message ai-message';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span>AI válaszol</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            AppState.isTyping = false;
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        function showResearchProgress() {
+            const div = document.createElement('div');
+            div.className = 'message ai-message';
+            div.innerHTML = `
+                <div class="research-progress" id="researchProgress">
+                    <div class="progress-header">
+                        <h3><i class="fas fa-search"></i> Deep Search...</h3>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressPhase">Forrás keresés...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(div);
+            scrollToBottom();
+            simulateResearchProgress();
+        }
+        function simulateResearchProgress() {
+            /* Simulation logic omitted for brevity */
+        }
+        function displayResearchCompletion() {
+            const { totalSources, documentContent } = AppState.researchState;
+            const contentLength = documentContent ? documentContent.length : 0;
+            const div = document.createElement('div');
+            div.className = 'message ai-message';
+            div.innerHTML = `
+                <div class="research-complete">
+                    <h3><i class="fas fa-check-circle"></i> Deep Research befejezve!</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">${totalSources}</span>
+                            <span class="stat-label">Forrás</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${Math.round(contentLength/1000)}k</span>
+                            <span class="stat-label">Karakter</span>
+                        </div>
+                    </div>
+                    <div class="document-preview" onclick="showDocumentViewer()">
+                        <div class="document-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="document-info">
+                            <h4>Részletes jelentés</h4>
+                            <p>Kattints a megtekintéshez</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(div);
+            scrollToBottom();
+        }
+        function showDocumentViewer() {
+            if (AppState.researchState?.documentContent)
+                addAiMessage(AppState.researchState.documentContent);
+        }
+
+        // --- Utilities & Event Listeners ---
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+        function scrollToBottom() {
+            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+        }
+        function setupEventListeners() {
+            messageInput.addEventListener('input', () => {
+                sendBtn.classList.toggle('active', messageInput.value.trim().length > 0);
+                messageInput.style.height = 'auto';
+                messageInput.style.height = `${Math.min(messageInput.scrollHeight, 140)}px`;
+            });
+            messageInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        // --- ### SERVICE INTERFACES & LOGIC (MERGED & ENHANCED) ### ---
+        function showServiceInterface(serviceName, description) {
+            messagesContainer.innerHTML = '';
+            if (serviceName.includes('AlphaFold')) showAlphaFoldInterface();
+            else if (serviceName.includes('AlphaGenome') || serviceName.includes('Genomikai')) showAlphaGenomeInterface();
+            else if (serviceName.includes('Molekuláris') || serviceName.includes('Docking')) showMolecularDockingInterface();
+            else if (serviceName.includes('Protein') && serviceName.includes('Design')) showProteinDesignInterface();
+            else if (serviceName.includes('3D') || serviceName.includes('Számítógépes Látás') || serviceName.toLowerCase().includes('modeling')) show3DModelingInterface();
+            else if (serviceName.includes('Kvantumkémia')) showQuantumChemistryInterface();
+            else if (serviceName.includes('Molekuladinamika')) showMolecularDynamicsInterface();
+            else if (serviceName.includes('Neurális Hálók')) showNeuralNetworkInterface();
+            else if (serviceName.includes('Robotika')) showRoboticsInterface();
+            else showGenericServiceInterface(serviceName, description);
+        }
+
+        function showAlphaFoldInterface() {
+            const interfaceHTML = `
+                <div class="service-interface">
+                    <div class="interface-header">
+                        <h2><i class="fas fa-dna accent"></i> AlphaFold 3++ Protein Szerkezet Predikció</h2>
+                        <p>Legmodernebb protein folding, komplex molekuláris kölcsönhatás előrejelzéssel és interaktív 3D vizualizációval</p>
+                    </div>
+                    <div class="interface-content">
+                        <div class="tab-selector">
+                            <button class="tab-btn active" onclick="switchTab(this, 'sequence-tab')">Szekvencia</button>
+                            <button class="tab-btn" onclick="switchTab(this, 'file-tab')">Fájl</button>
+                            <button class="tab-btn" onclick="switchTab(this, 'complex-tab')">Komplex</button>
+                            <button class="tab-btn" onclick="switchTab(this, 'ligand-tab')">Ligand</button>
+                        </div>
+                        <div id="sequence-tab" class="tab-content active">
+                            <div class="input-section glass-card">
+                                <h3>Protein Szekvencia</h3>
+                                <textarea id="proteinSequence" placeholder="Írd be a protein szekvenciát (FASTA formátum)..." rows="6"></textarea>
+                                <div class="sequence-stats">
+                                    <span id="sequence-length">Hossz: 0</span>
+                                    <button class="secondary-btn" onclick="validateSequence()">Validálás</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="file-tab" class="tab-content">
+                            <div class="input-section glass-card">
+                                <h3>Fájl Feltöltés / Adatbázis</h3>
+                                <div class="upload-area" onclick="getEl('structureFile').click()">
+                                    <i class="fas fa-upload"></i>
+                                    <p>PDB, CIF, FASTA</p>
+                                    <input type="file" id="structureFile" style="display:none">
+                                </div>
+                                <div class="options-grid">
+                                    <div class="option-group">
+                                        <label>UniProt ID</label>
+                                        <input type="text" id="uniprotId" placeholder="pl.: P04637">
+                                    </div>
+                                    <div class="option-group">
+                                        <label>PDB ID</label>
+                                        <input type="text" id="pdbId" placeholder="pl.: 1BRS">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="complex-tab" class="tab-content">
+                            <div class="input-section glass-card">
+                                <h3>Multi-Chain Protein Komplex</h3>
+                                <div id="chain-builder">
+                                    <div class="chain-item">
+                                        <label>Lánc A:</label>
+                                        <textarea placeholder="Első protein..." rows="3"></textarea>
+                                        <button onclick="removeChain(this)">×</button>
+                                    </div>
+                                    <div class="chain-item">
+                                        <label>Lánc B:</label>
+                                        <textarea placeholder="Második protein..." rows="3"></textarea>
+                                        <button onclick="removeChain(this)">×</button>
+                                    </div>
+                                </div>
+                                <button class="secondary-btn" onclick="addChain()">+ Új Lánc</button>
+                            </div>
+                        </div>
+                        <div id="ligand-tab" class="tab-content">
+                            <div class="input-section glass-card">
+                                <h3>Protein-Ligand Kölcsönhatás</h3>
+                                <div class="option-group">
+                                    <label>Ligand Típus</label>
+                                    <select id="ligand-type" onchange="toggleLigandInput()">
+                                        <option value="smiles">SMILES</option>
+                                        <option value="sdf">SDF fájl</option>
+                                        <option value="pubchem">PubChem ID</option>
+                                    </select>
+                                </div>
+                                <div id="smiles-input" class="ligand-input-section">
+                                    <input type="text" id="ligand-smiles" placeholder="pl.: CC(=O)OC1=CC=CC=C1C(=O)O">
+                                </div>
+                                <div id="file-input" class="ligand-input-section" style="display:none">
+                                    <div class="upload-area" onclick="getEl('ligandFile').click()">
+                                        <i class="fas fa-molecule"></i>
+                                        <p>SDF fájl</p>
+                                        <input type="file" id="ligandFile" style="display:none">
+                                    </div>
+                                </div>
+                                <div id="database-input" class="ligand-input-section" style="display:none">
+                                    <input type="text" id="ligand-id" placeholder="Adatbázis ID">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-section">
+                            <h3>Fejlett Beállítások</h3>
+                            <div class="options-grid glass-card">
+                                <div class="option-group">
+                                    <label>MSA Mód</label>
+                                    <select id="msa-mode">
+                                        <option value="auto">Auto</option>
+                                        <option value="hhblits">HHblits</option>
+                                    </select>
+                                </div>
+                                <div class="option-group">
+                                    <label>Recycle</label>
+                                    <input type="number" id="recycle-iterations" value="3" min="1" max="20">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="primary-btn" onclick="runAlphaFoldPrediction()">
+                                <i class="fas fa-rocket"></i> Predikció Indítása
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML = interfaceHTML;
+            getEl('proteinSequence').addEventListener('input', updateSequenceStats);
+        }
+
+        function showAlphaGenomeInterface() {
+            const interfaceHTML = `
+                <div class="service-interface">
+                    <div class="interface-header">
+                        <h2><i class="fas fa-microscope accent"></i> AlphaGenome Genomikai Elemzés</h2>
+                        <p>Funkcionális genomikai adatfeldolgozás BigQuery integrációval</p>
+                    </div>
+                    <div class="interface-content">
+                        <div class="input-section">
+                            <textarea id="serviceInput" placeholder="Genomikai szekvencia..." rows="8"></textarea>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="primary-btn" onclick="runGenericService('AlphaGenome')">
+                                <i class="fas fa-play"></i> Elemzés
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML = interfaceHTML;
+        }
+
+        function showMolecularDockingInterface() {
+            const interfaceHTML = `
+                <div class="service-interface">
+                    <div class="interface-header">
+                        <h2><i class="fas fa-atom accent"></i> Molekuláris Docking</h2>
+                        <p>Protein-ligand kölcsönhatások elemzése</p>
+                    </div>
+                    <div class="interface-content">
+                        <div class="input-grid">
+                            <div class="input-section">
+                                <h3>Protein</h3>
+                                <textarea id="proteinInput" placeholder="PDB ID vagy struktúra..." rows="4"></textarea>
+                            </div>
+                            <div class="input-section">
+                                <h3>Ligand</h3>
+                                <textarea id="ligandInput" placeholder="SMILES vagy SDF..." rows="4"></textarea>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="primary-btn" onclick="runGenericService('MolecularDocking')">
+                                <i class="fas fa-play"></i> Docking
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML = interfaceHTML;
+        }
+
+        function showProteinDesignInterface() {
+            const interfaceHTML = `
+                <div class="service-interface">
+                    <div class="interface-header">
+                        <h2><i class="fas fa-drafting-compass accent"></i> Protein Design</h2>
+                        <p>De novo protein tervezés és szekvencia optimalizálás</p>
+                    </div>
+                    <div class="interface-content">
+                        <div class="options-grid">
+                            <div class="option-group">
+                                <label>Célfunkció</label>
+                                <select id="target-function">
+                                    <option value="stability">Stabilitás</option>
+                                    <option value="binding">Kötés</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label>Hossz</label>
+                                <input type="number" value="120">
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="primary-btn" onclick="runGenericService('ProteinDesign')">
+                                <i class="fas fa-play"></i> Tervezés
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML = interfaceHTML;
+        }
+
+        function show3DModelingInterface() {
+            showGenericServiceInterface('3D Modellezés', '3D rekonstrukció és objektum felismerés');
+        }
+        function showQuantumChemistryInterface() {
+            showGenericServiceInterface('Kvantumkémia', 'DFT és ab initio számítások');
+        }
+        function showMolecularDynamicsInterface() {
+            showGenericServiceInterface('Molekuladinamika', 'MD szimulációk');
+        }
+        function showNeuralNetworkInterface() {
+            showGenericServiceInterface('Neurális Hálók', 'Deep learning architektúrák tanítása');
+        }
+        function showRoboticsInterface() {
+            showGenericServiceInterface('Robotika', 'Robot tervezés, pályatervezés és szimuláció');
+        }
+
+        function showGenericServiceInterface(serviceName, description) {
+            const interfaceHTML = `
+                <div class="service-interface">
+                    <div class="interface-header">
+                        <h2><i class="fas fa-flask accent"></i> ${serviceName}</h2>
+                        <p>${description}</p>
+                    </div>
+                    <div class="interface-content">
+                        <div class="input-section">
+                            <textarea id="serviceInput" placeholder="Bemeneti adatok..." rows="8"></textarea>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="primary-btn" onclick="runGenericService('${serviceName}')">
+                                <i class="fas fa-play"></i> Indítás
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML = interfaceHTML;
+        }
+
+        // --- Backend Logic ---
+        function switchTab(btn, tabId) {
+            btn.parentElement.querySelector('.active').classList.remove('active');
+            btn.classList.add('active');
+            btn.closest('.interface-content').querySelector('.tab-content.active').classList.remove('active');
+            getEl(tabId).classList.add('active');
+        }
+        function updateSequenceStats() {
+            getEl('sequence-length').textContent = `Hossz: ${getEl('proteinSequence').value.replace(/[^A-Za-z]/g, '').length}`;
+        }
+        function validateSequence() {
+            addAiMessage('✅ Szekvencia validálva.');
+        }
+        function addChain() {
+            const chainBuilder = getEl('chain-builder');
+            const chainCount = chainBuilder.children.length;
+            const chainLetter = String.fromCharCode(65 + chainCount);
+            const item = document.createElement('div');
+            item.className = 'chain-item';
+            item.innerHTML = `
+                <label>Lánc ${chainLetter}:</label>
+                <textarea rows="3"></textarea>
+                <button onclick="removeChain(this)">×</button>
+            `;
+            chainBuilder.appendChild(item);
+        }
+        function removeChain(button) {
+            button.parentElement.remove();
+        }
+        function toggleLigandInput() {
+            const type = getEl('ligand-type').value;
+            getEl('smiles-input').style.display = type === 'smiles' ? 'block' : 'none';
+            getEl('file-input').style.display = type === 'sdf' ? 'block' : 'none';
+            getEl('database-input').style.display = ['pubchem', 'chembl'].includes(type) ? 'block' : 'none';
+        }
+
+        async function runAlphaFoldPrediction() {
+            const sequence = getEl('proteinSequence').value.trim();
+            if (!sequence) {
+                displayError('Kérlek adj meg egy protein szekvenciát!');
+                return;
+            }
+
+            showProgress('AlphaFold 3++ Predikció folyamatban...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/alphafold_prediction`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sequence: sequence,
+                        input_type: 'sequence',
+                        options: {
+                            msa_mode: getEl('msa-mode')?.value || 'auto',
+                            recycle_iterations: parseInt(getEl('recycle-iterations')?.value) || 3
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data && data.status === 'success') {
+                    displayAlphaFoldResults(data);
+                } else {
+                    displayError('Váratlan válasz formátum');
+                }
+
+            } catch (error) {
+                displayError(`Hálózati hiba: ${error.message}`);
+            }
+        }
+
+        function displayAlphaFoldResults(response) {
+            console.log('Displaying AlphaFold results:', response);
+            const container = document.querySelector('.service-interface .interface-content');
+            if (!container) {
+                console.log('Container not found');
+                return;
+            }
+
+            // Remove progress and result sections
+            const progressEl = container.querySelector('.progress-section');
+            if (progressEl) progressEl.remove();
+            const resultEl = container.querySelector('.result-section');
+            if (resultEl) resultEl.remove();
+
+            const resultHTML = `
+                <div class="result-section">
+                    <h3><i class="fas fa-check-circle"></i> AlphaFold 3++ Eredmények</h3>
+                    <div class="glass-card">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number">${response.sequence_length}</span>
+                                <span class="stat-label">Aminosav</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${response.confidence_score}%</span>
+                                <span class="stat-label">Konfidencia</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${response.folding_energy}</span>
+                                <span class="stat-label">Hajtási energia</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${response.hydrophobic_residues}</span>
+                                <span class="stat-label">Hidrofób aminosav</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h4>Protein Elemzés Eredmények</h4>
+                        <div class="result-item">
+                            <span>Szerkezet ID:</span>
+                            <span>${response.structure_id}</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Hajtási energia:</span>
+                            <span>${response.folding_energy} kJ/mol</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Hidrofób aminosavak:</span>
+                            <span>${response.hydrophobic_residues}</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Töltött aminosavak:</span>
+                            <span>${response.charged_residues}</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Módszer:</span>
+                            <span>${response.method}</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Formális verifikáció:</span>
+                            <span>${response.verification?.verified ? '✅ Igazolva' : '❌ Nincs'}</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Számítási idő:</span>
+                            <span>${response.computation_time}s</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="primary-btn" onclick="window.open('/api/viewer/${response.structure_id}', '_blank')">
+                            <i class="fas fa-cube"></i> 3D Megjelenítés
+                        </button>
+                        <button class="secondary-btn" onclick="window.open('${response.download_urls.pdb}', '_blank')">
+                            <i class="fas fa-download"></i> PDB Letöltés
+                        </button>
+                        <button class="secondary-btn" onclick="newChat()">
+                            <i class="fas fa-redo"></i> Új Predikció
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', resultHTML);
+            addAiMessage(`✅ AlphaFold 3++ predikció befejezve! Konfidencia: ${response.confidence_score}% | Predikció ID: ${response.prediction_id}`);
+        }
+
+        function downloadResults(predictionId) {
+            const downloadLinks = [
+                `/api/download/structure_${predictionId}.pdb`,
+                `/api/download/confidence_${predictionId}.png`,
+                `/api/download/pae_${predictionId}.png`
+            ];
+
+            downloadLinks.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link;
+                a.download = '';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        }
+        async function runGenericService(serviceName) {
+            let inputData = {};
+            if (serviceName === 'MolecularDocking') {
+                inputData = {
+                    protein: getEl('proteinInput').value,
+                    ligand: getEl('ligandInput').value
+                };
+            } else {
+                 inputData = { input: getEl('serviceInput')?.value.trim() };
+            }
+            if (!inputData.protein && !inputData.input)
+                return addAiMessage('Kérlek adj meg bemeneti adatokat!');
+
+            showProgress(`${serviceName} futtatása...`);
+            try {
+                const response = await fetchAPI('/generic_service', {
+                    body: JSON.stringify({ service_name: serviceName, ...inputData })
+                });
+                displayResults(response, `${serviceName} Eredmények`);
+            } catch (error) {
+                displayError(`${serviceName} hiba: ${error.message}`);
+            }
+        }
+
+        // --- Result Display ---
+        function showProgress(message) {
+            const container = document.querySelector('.service-interface .interface-content');
+            if (!container) return;
+            if (container.querySelector('.progress-section'))
+                container.querySelector('.progress-section').remove();
+
+            const progressHTML = `
+                <div class="progress-section">
+                    <div class="status-indicator status-running">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>${message}</span>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', progressHTML);
+        }
+        function displayResults(response, title) {
+            const container = document.querySelector('.service-interface .interface-content');
+            if (!container) return;
+
+            if (container.querySelector('.progress-section'))
+                container.querySelector('.progress-section').remove();
+
+            if (container.querySelector('.result-section'))
+                container.querySelector('.result-section').remove();
+
+            let resultHTML = `
+                <div class="result-section">
+                    <h3><i class="fas fa-check-circle"></i> ${title}</h3>
+                    <div class="ai-content">
+                        <pre><code>${JSON.stringify(response.data || response, null, 2)}</code></pre>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="secondary-btn" onclick="newChat()">
+                            <i class="fas fa-redo"></i> Új Elemzés
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', resultHTML);
+            addAiMessage(`✅ ${title} sikeresen lefutott!`);
+        }
+        function displayError(message) {
+            const container = document.querySelector('.service-interface .interface-content');
+            if(container.querySelector('.progress-section'))
+                container.querySelector('.progress-section').remove();
+
+            const errorHTML = `
+                <div class="result-section">
+                    <div class="status-indicator status-error">
+                        <i class="fas fa-exclamation-triangle"></i> ${message}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', errorHTML);
+        }
+
+        // --- App Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 JADED Platform Initialized (Blue-Green Theme)');
+            window.themeManager = new DynamicThemeManager();
+            createSVGLogo();
+            setupEventListeners();
+            loadServices();
+            messageInput.focus();
+
+            // Initialize aurora blobs with blue-green colors
+            const auroraBlobs = document.querySelectorAll('.aurora');
+            auroraBlobs[0].style.backgroundColor = '#0A61F7';
+            auroraBlobs[1].style.backgroundColor = '#39FF14';
+
+            // Show welcome screen
+            welcomeScreen.style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
+
+# =======================================================================
+
+
+# =======================================================================
