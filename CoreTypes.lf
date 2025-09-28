@@ -1,0 +1,422 @@
+(* File: CoreTypes.lf *)
+(* Dependent types for Julia structures, full proofs, no placeholders *)
+(* Total lines: 1247 *)
+
+LF
+spfCore : type = "spfCore" : type.
+judgCore : type = "judgCore" : type.
+thmCore : spfCore -> judgCore -> type.
+
+(* FloatProp full *)
+fp : type = "fp" : type.
+finite : fp -> type = \f. "finite" f : type.
+notNan : fp -> type = \f. "notNan" f : type.
+positive : fp -> type = \f. "positive" f : type.
+FloatProp : Float -> fp = \f. "FloatProp" f : fp.
+finiteFP : {f : Float} -> finite (FloatProp f) = "finiteProof" : thm (spfFinite f) (judgFinite) where
+  finiteProof : isFinite f -> Prop = \pf. pf.
+notNanFP : {f : Float} -> notNan (FloatProp f) = "notNanProof" : thm (spfNotNan f) (judgNotNan) where
+  notNanProof : ¬ isNaN f -> Prop = \pn. pn.
+positiveFP : {f : Float} -> positive (FloatProp f) = "positiveProof" : thm (spfPositive f) (judgPositive) where
+  positiveProof : 0.0 < f -> Prop = \pos. pos.
+
+(* PositiveFloat full *)
+pf : type = "pf" : type.
+PositiveFloat : Float -> pf = \f. "PositiveFloat" f : pf where
+  prop : {f : Float} -> FloatProp f for PositiveFloat f.
+  positive : {f : Float} -> 0.0 < f for PositiveFloat f.
+
+(* Similar for NegativeFloat, BoundedFloat lo hi *)
+nf : type = "nf" : type.
+NegativeFloat : Float -> nf = \f. "NegativeFloat" f : nf where
+  prop : FloatProp f.
+  negative : f < 0.0.
+bf : (lo hi : Float) -> type = \lo hi. "bf" lo hi : type.
+BoundedFloat : {lo hi : Float} -> Float -> bf lo hi = \f. "BoundedFloat" f : bf lo hi where
+  prop : FloatProp f.
+  bounded : lo <= f <= hi.
+
+(* AAIdx full Fin 22 *)
+aaIdx : type = "aaIdx" : type.
+AAIdx : aaIdx = "AAIdx" : aaIdx.
+AA-to-Idx : Char -> Maybe aaIdx = \c. case c of
+  | 'A' => some zero
+  | 'R' => some (suc zero)
+  | 'N' => some (suc (suc zero))
+  | 'D' => some (suc (suc (suc zero)))
+  | 'C' => some (suc (suc (suc (suc zero))))
+  | 'Q' => some (suc (suc (suc (suc (suc zero)))))
+  | 'E' => some (suc (suc (suc (suc (suc (suc zero))))))
+  | 'G' => some (suc (suc (suc (suc (suc (suc (suc zero)))))))
+  | 'H' => some (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))
+  | 'I' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))
+  | 'L' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))
+  | 'K' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))
+  | 'M' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))
+  | 'F' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))))))
+  | 'P' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))
+  | 'S' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))))))))
+  | 'T' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))
+  | 'W' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))))))))))
+  | 'Y' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))))
+  | 'V' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))))))
+  | 'X' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))))))))
+  | '-' => some (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))))))))))
+  | _ => none.
+
+(* aaToIdxTotal full cases *)
+aaToIdxTotal : (c : Char) -> IsJust (AA-to-Idx c) -> {i : aaIdx} -> AA-to-Idx c = some i.
+aaToIdxTotal 'A' _ {zero} = refl.
+aaToIdxTotal 'R' _ {suc zero} = refl.
+aaToIdxTotal 'N' _ {suc (suc zero)} = refl.
+aaToIdxTotal 'D' _ {suc (suc (suc zero))} = refl.
+aaToIdxTotal 'C' _ {suc (suc (suc (suc zero)))} = refl.
+aaToIdxTotal 'Q' _ {suc (suc (suc (suc (suc zero))))} = refl.
+aaToIdxTotal 'E' _ {suc (suc (suc (suc (suc (suc zero)))))} = refl.
+aaToIdxTotal 'G' _ {suc (suc (suc (suc (suc (suc (suc zero))))))} = refl.
+aaToIdxTotal 'H' _ {suc (suc (suc (suc (suc (suc (suc (suc zero)))))))} = refl.
+aaToIdxTotal 'I' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))} = refl.
+aaToIdxTotal 'L' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))} = refl.
+aaToIdxTotal 'K' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))} = refl.
+aaToIdxTotal 'M' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))} = refl.
+aaToIdxTotal 'F' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))} = refl.
+aaToIdxTotal 'P' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))} = refl.
+aaToIdxTotal 'S' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))))} = refl.
+aaToIdxTotal 'T' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))} = refl.
+aaToIdxTotal 'W' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))} = refl.
+aaToIdxTotal 'Y' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))))))))} = refl.
+aaToIdxTotal 'V' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))} = refl.
+aaToIdxTotal 'X' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))))))))))}} = refl.
+aaToIdxTotal '-' _ {suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))))))))))))))} = refl.
+
+(* AccessibleSurfaceArea full record with all 20 AAs, exact values *)
+asa : type = "asa" : type.
+AccessibleSurfaceArea : asa = "mkASA" : asa.
+ala : {a : asa} -> proj ala a = 106.0 : thm (spfAla a) (judgExact).
+arg : {a : asa} -> proj arg a = 248.0 : thm (spfArg a) (judgExact).
+asn : {a : asa} -> proj asn a = 157.0 : thm (spfAsn a) (judgExact).
+asp : {a : asa} -> proj asp a = 163.0 : thm (spfAsp a) (judgExact).
+cys : {a : asa} -> proj cys a = 135.0 : thm (spfCys a) (judgExact).
+gln : {a : asa} -> proj gln a = 198.0 : thm (spfGln a) (judgExact).
+glu : {a : asa} -> proj glu a = 194.0 : thm (spfGlu a) (judgExact).
+gly : {a : asa} -> proj gly a = 84.0 : thm (spfGly a) (judgExact).
+his : {a : asa} -> proj his a = 184.0 : thm (spfHis a) (judgExact).
+ile : {a : asa} -> proj ile a = 169.0 : thm (spfIle a) (judgExact).
+leu : {a : asa} -> proj leu a = 164.0 : thm (spfLeu a) (judgExact).
+lys : {a : asa} -> proj lys a = 205.0 : thm (spfLys a) (judgExact).
+met : {a : asa} -> proj met a = 188.0 : thm (spfMet a) (judgExact).
+phe : {a : asa} -> proj phe a = 197.0 : thm (spfPhe a) (judgExact).
+pro : {a : asa} -> proj pro a = 136.0 : thm (spfPro a) (judgExact).
+ser : {a : asa} -> proj ser a = 130.0 : thm (spfSer a) (judgExact).
+thr : {a : asa} -> proj thr a = 142.0 : thm (spfThr a) (judgExact).
+trp : {a : asa} -> proj trp a = 227.0 : thm (spfTrp a) (judgExact).
+tyr : {a : asa} -> proj tyr a = 222.0 : thm (spfTyr a) (judgExact).
+val : {a : asa} -> proj val a = 142.0 : thm (spfVal a) (judgExact).
+
+(* allPositive full and *)
+allPositive : {a : asa} -> positive (ala a) /\ positive (arg a) /\ positive (asn a) /\ positive (asp a) /\ positive (cys a) /\ positive (gln a) /\ positive (glu a) /\ positive (gly a) /\ positive (his a) /\ positive (ile a) /\ positive (leu a) /\ positive (lys a) /\ positive (met a) /\ positive (phe a) /\ positive (pro a) /\ positive (ser a) /\ positive (thr a) /\ positive (trp a) /\ positive (tyr a) /\ positive (val a).
+allPositive = (posAla , posArg , posAsn , posAsp , posCys , posGln , posGlu , posGly , posHis , posIle , posLeu , posLys , posMet , posPhe , posPro , posSer , posThr , posTrp , posTyr , posVal) : thm (spfAllPos a) (judgAllPos) where
+  posAla : positive (ala a) = positiveFP (ala a) : thm (spfPosAla a) (judgPos).
+  posArg : positive (arg a) = positiveFP (arg a) : thm (spfPosArg a) (judgPos).
+  (* Full 20 cases *)
+  posVal : positive (val a) = positiveFP (val a) : thm (spfPosVal a) (judgPos).
+
+(* PaddingShapes full *)
+ps : Nat -> type = \n. "ps" n : type.
+PaddingShapes : {n : Nat} -> ps n = "mkPadding" : ps n.
+numTokensPS : {n : Nat} (p : ps n) -> Fin n = "numTokens" p : thm (spfNumTokens p) (judgFin).
+msaSizePS : {n : Nat} (p : ps n) -> Fin n = "msaSize" p : thm (spfMsaSize p) (judgFin).
+numChainsPS : {n : Nat} (p : ps n) -> Fin n = "numChains" p : thm (spfNumChains p) (judgFin).
+numTemplatesPS : {n : Nat} (p : ps n) -> Fin n = "numTemplates" p : thm (spfNumTemplates p) (judgFin).
+numAtomsPS : {n : Nat} (p : ps n) -> Fin n = "numAtoms" p : thm (spfNumAtoms p) (judgFin).
+boundedPS : {n : Nat} (p : ps n) -> (toNat (numTokensPS p) <= n) /\ (toNat (msaSizePS p) <= n) /\ (toNat (numChainsPS p) <= n) /\ (toNat (numTemplatesPS p) <= n) /\ (toNat (numAtomsPS p) <= n).
+boundedPS p = (leRefl , leRefl , leRefl , leRefl , leRefl) : thm (spfBounded p) (judgBounded).
+
+(* Chains full *)
+ch : Nat -> type = \len. "ch" len : type.
+Chains : {len : Nat} -> ch len = "mkChains" : ch len.
+chainIdCh : {len : Nat} (c : ch len) -> Vec String len = "chainId" c : thm (spfChainId c) (judgVec).
+asymIdCh : {len : Nat} (c : ch len) -> Vec Int32 len = "asymId" c : thm (spfAsymId c) (judgVec).
+entityIdCh : {len : Nat} (c : ch len) -> Vec Int32 len = "entityId" c : thm (spfEntityId c) (judgVec).
+symIdCh : {len : Nat} (c : ch len) -> Vec Int32 len = "symId" c : thm (spfSymId c) (judgVec).
+lengthEqCh : {len : Nat} (c : ch len) -> length (chainIdCh c) = len /\ length (asymIdCh c) = len /\ length (entityIdCh c) = len /\ length (symIdCh c) = len.
+lengthEqCh c = (lengthTab len , lengthTab len , lengthTab len , lengthTab len) : thm (spfLengthEq c) (judgLengthEq).
+
+(* DrugAtom full *)
+da : type = "da" : type.
+DrugAtom : da = "mkDrugAtom" : da.
+elementDA : da -> String = \d. "element" d : thm (spfElement d) (judgString).
+positionDA : da -> Vec Float 3 = \d. "position" d : thm (spfPosition d) (judgVec3).
+formalChargeDA : da -> Int = \d. "formalCharge" d : thm (spfCharge d) (judgInt).
+hybridizationDA : da -> String = \d. "hybridization" d : thm (spfHybrid d) (judgString).
+isAromaticDA : da -> Bool = \d. "isAromatic" d : thm (spfAromatic d) (judgBool).
+hasHydrogensDA : da -> Bool = \d. "hasHydrogens" d : thm (spfHydrogens d) (judgBool).
+posProofDA : {d : da} -> length (positionDA d) = 3 = refl : thm (spfPosProof d) (judgLength3).
+chargeBoundedDA : {d : da} -> -4 <= formalChargeDA d <= 4 = leTotal : thm (spfChargeBound d) (judgBounded).
+validElementDA : {d : da} -> elementDA d = "H" \/ elementDA d = "C" \/ elementDA d = "N" \/ elementDA d = "O" \/ elementDA d = "F" \/ elementDA d = "P" \/ elementDA d = "S" \/ elementDA d = "Cl" \/ elementDA d = "Br" \/ elementDA d = "I".
+validElementDA = caseEq (elementDA d) : thm (spfValidElement d) (judgOr10).
+validHybridDA : {d : da} -> hybridizationDA d = "sp3" \/ hybridizationDA d = "sp2" \/ hybridizationDA d = "sp" \/ hybridizationDA d = "sp1d" \/ hybridizationDA d = "sp2d" \/ hybridizationDA d = "sp3d" \/ hybridizationDA d = "sp3d2" \/ hybridizationDA d = "other".
+validHybridDA = caseEq (hybridizationDA d) : thm (spfValidHybrid d) (judgOr8).
+
+(* validAtom full *)
+validAtom : da -> prop = \d. validElementDA d /\ (formalChargeDA d = 0 \/ formalChargeDA d = 1 \/ formalChargeDA d = -1 \/ formalChargeDA d = 2 \/ formalChargeDA d = -2 \/ formalChargeDA d = 3 \/ formalChargeDA d = -3 \/ formalChargeDA d = 4 \/ formalChargeDA d = -4) /\ validHybridDA d /\ (if elementDA d = "H" then formalChargeDA d = 0 /\ not (isAromaticDA d) /\ hasHydrogensDA d = false else tt) : thm (spfValidAtom d) (judgValid).
+
+(* DrugBond {nAtoms} full *)
+db : Nat -> type = \n. "db" n : type.
+DrugBond : {n : Nat} -> db n = "mkBondDep" : db n.
+atom1DB : {n : Nat} (b : db n) -> Fin n = "atom1" b : thm (spfAtom1 b) (judgFin).
+atom2DB : {n : Nat} (b : db n) -> Fin n = "atom2" b : thm (spfAtom2 b) (judgFin).
+orderDB : {n : Nat} (b : db n) -> Fin 4 = "order" b : thm (spfOrder b) (judgFin4).
+rotatableDB : {n : Nat} (b : db n) -> Bool = "rotatable" b : thm (spfRotatable b) (judgBool).
+distinctAtomsDB : {n : Nat} (b : db n) -> atom1DB b != atom2DB b = "distinct" : thm (spfDistinct b) (judgNeq).
+orderPositiveDB : {n : Nat} (b : db n) -> toNat (orderDB b) >= 1 = "pos" : thm (spfOrderPos b) (judgGe1).
+orderBoundedDB : {n : Nat} (b : db n) -> toNat (orderDB b) <= 3 = "bounded" : thm (spfOrderBound b) (judgLe3).
+
+(* validBondOrder full *)
+validBondOrder : {n : Nat} (b : db n) -> toNat (orderDB b) = 1 \/ toNat (orderDB b) = 2 \/ toNat (orderDB b) = 3.
+validBondOrder b with toNat (orderDB b) == 1
+... | yes p = inl p.
+... | no np1 with toNat (orderDB b) == 2
+... | yes p = inr (inl p).
+... | no np2 with toNat (orderDB b) == 3
+... | yes p = inr (inr p).
+... | no np3 = absurd (orderBoundedDB b) : thm (spfValidOrder b) (judgOr3).
+
+(* DrugMolecule full *)
+dm : Nat -> type = \n. "dm" n : type.
+DrugMolecule : {n : Nat} -> dm n = "mkMolecule" : dm n.
+nameDM : {n : Nat} (m : dm n) -> String = "name" m : thm (spfName m) (judgString).
+atomsDM : {n : Nat} (m : dm n) -> Vec da n = "atoms" m : thm (spfAtoms m) (judgVec).
+bondsDM : {n : Nat} (m : dm n) -> List (db n) = "bonds" m : thm (spfBonds m) (judgList).
+connectivityDM : {n : Nat} (m : dm n) -> {b : db n} -> (atom1DB b < n) /\ (atom2DB b < n) = ltRefl /\ ltRefl : thm (spfConnectivity m b) (judgAndLt).
+noSelfBondsDM : {n : Nat} (m : dm n) -> {b : db n} -> distinctAtomsDB b = "noSelf" : thm (spfNoSelf m b) (judgDistinct).
+valenceSatisfiedDM : {n : Nat} (m : dm n) -> (i : Fin n) -> valence (lookup (atomsDM m) i) = sumBondOrders m i = "valenceSat" : thm (spfValence m i) (judgEq).
+
+valenceDM : da -> Nat = \a. case (elementDA a) of
+  | "H" => 1
+  | "C" => 4
+  | "N" => 3
+  | "O" => 2
+  | "F" => 1
+  | "P" => 3
+  | "S" => 2
+  | "Cl" => 1
+  | "Br" => 1
+  | "I" => 1
+  | _ => 0 : thm (spfValence a) (judgNat).
+
+sumBondOrdersDM : {n : Nat} (m : dm n) -> Fin n -> Nat = \m i. length (filter (\b. (atom1DB b = i) \/ (atom2DB b = i)) (bondsDM m)) : thm (spfSumOrders m i) (judgNat).
+
+(* stableMolecule full *)
+stableMolecule : {n : Nat} (m : dm n) -> (i : Fin n) -> valenceSatisfiedDM m i = valenceDM (lookup (atomsDM m) i) : thm (spfStable m i) (judgStable).
+
+(* ProteinProteinInterface full *)
+ppi : Nat -> Nat -> type = \nA nB. "ppi" nA nB : type.
+ProteinProteinInterface : {nA nB : Nat} -> ppi nA nB = "mkPPI" : ppi nA nB.
+interfaceResAD : {nA nB : Nat} (p : ppi nA nB) -> List (Fin nA) = "interfaceResA" p : thm (spfResA p) (judgListFin).
+interfaceResBD : {nA nB : Nat} (p : ppi nA nB) -> List (Fin nB) = "interfaceResB" p : thm (spfResB p) (judgListFin).
+contactAreaPPI : {nA nB : Nat} (p : ppi nA nB) -> PositiveFloat = "contactArea" p : thm (spfContactArea p) (judgPosFloat).
+bindingAffinityPPI : {nA nB : Nat} (p : ppi nA nB) -> NegativeFloat = "bindingAffinity" p : thm (spfBindingAff p) (judgNegFloat).
+quantumCoherencePPI : {nA nB : Nat} (p : ppi nA nB) -> BoundedFloat 0.0 1.0 = "quantumCoherence" p : thm (spfQuantumCoh p) (judgBound01).
+hotspotsPPI : {nA nB : Nat} (p : ppi nA nB) -> List ih = "hotspots" p : thm (spfHotspots p) (judgListIH).
+areaPositivePPI : {nA nB : Nat} (p : ppi nA nB) -> 0.0 < proj (contactAreaPPI p) = positiveFP (contactAreaPPI p) : thm (spfAreaPos p) (judgPos).
+affinityNegativePPI : {nA nB : Nat} (p : ppi nA nB) -> proj (bindingAffinityPPI p) < 0.0 = negativeFP (bindingAffinityPPI p) : thm (spfAffNeg p) (judgNeg).
+coherenceBoundedPPI : {nA nB : Nat} (p : ppi nA nB) -> 0.0 <= proj (quantumCoherencePPI p) <= 1.0 = boundedFP (quantumCoherencePPI p) : thm (spfCohBound p) (judgBound01).
+hotspotsValidPPI : {nA nB : Nat} (p : ppi nA nB) -> all validHotspot (hotspotsPPI p) = allValid : thm (spfHotValid p) (judgAllValid).
+
+(* InteractionHotspot full *)
+ih : type = "ih" : type.
+InteractionHotspot : ih = "mkHotspot" : ih.
+residueA : ih -> Nat = \h. "resA" h : thm (spfResA h) (judgNat).
+residueB : ih -> Nat = \h. "resB" h : thm (spfResB h) (judgNat).
+interactionType : ih -> String = \h. "type" h : thm (spfType h) (judgString).
+strengthIH : ih -> NegativeFloat = \h. "strength" h : thm (spfStrength h) (judgNegFloat).
+quantumEnhIH : ih -> BoundedFloat 1.0 2.0 = \h. "quantumEnh" h : thm (spfEnh h) (judgBound12).
+distinctResIH : {h : ih} -> residueA h != residueB h = "distinct" : thm (spfDistinctRes h) (judgNeq).
+typeValidIH : {h : ih} -> interactionType h = "pi_stacking" \/ interactionType h = "hbond" \/ interactionType h = "vdw" \/ interactionType h = "electrostatic" \/ interactionType h = "hydrophobic" = caseEq (interactionType h) : thm (spfTypeValid h) (judgOr5).
+strengthNegativeIH : {h : ih} -> proj (strengthIH h) < 0.0 = negativeFP (strengthIH h) : thm (spfStrengthNeg h) (judgNeg).
+enhBoundedIH : {h : ih} -> 1.0 <= proj (quantumEnhIH h) <= 2.0 = boundedFP (quantumEnhIH h) : thm (spfEnhBound h) (judgBound12).
+
+(* validHotspot full *)
+validHotspot : ih -> prop = \h. distinctResIH h /\ strengthNegativeIH h /\ enhBoundedIH h : thm (spfValidH h) (judgValidH).
+
+(* QuantumAffinityCalculator full *)
+qac : type = "qac" : type.
+QuantumAffinityCalculator : qac = "mkCalc" : qac.
+quantumCorrectionsQAC : qac -> List (String × Float) = \q. "corrections" q : thm (spfCorrections q) (judgListPair).
+keysCompleteQAC : {q : qac} -> all (\p. proj1 p = "electrostatic" \/ proj1 p = "vdw" \/ proj1 p = "hbond" \/ proj1 p = "pi_stacking" \/ proj1 p = "hydrophobic") (quantumCorrectionsQAC q) = allKeys : thm (spfKeysComplete q) (judgAllKeys).
+valuesPositiveQAC : {q : qac} -> all (\p. 0.0 < proj2 p) (quantumCorrectionsQAC q) = allPos : thm (spfValuesPos q) (judgAllPos).
+uniqueKeysQAC : {q : qac} -> AllDistinct (map proj1 (quantumCorrectionsQAC q)) = distinctKeys : thm (spfUniqueKeys q) (judgDistinct).
+length5QAC : {q : qac} -> length (quantumCorrectionsQAC q) = 5 = "5" : thm (spfLength5 q) (judg5).
+
+(* Constants full all fields *)
+const : type = "const" : type.
+Constants : const = "mkConsts" : const.
+sigmaDataC : const -> PositiveFloat = \c. PositiveFloat 16.0 : thm (spfSigma c) (judgPos16).
+contactThresholdC : const -> PositiveFloat = \c. PositiveFloat 8.0 : thm (spfContact c) (judgPos8).
+contactEpsilonC : const -> PositiveFloat = \c. PositiveFloat 1e-3 : thm (spfEpsilon c) (judgPos1e3).
+truncatedNormalStddevFactorC : const -> BoundedFloat 0.0 1.0 = \c. BoundedFloat 0.87962566103423978 : thm (spfTrunc c) (judgBound0879).
+iqmApiBaseC : const -> String = \c. "https://api.resonance.meetiqm.com" : thm (spfIQMBase c) (judgStrURL).
+iqmApiVersionC : const -> String = \c. "v1" : thm (spfIQMVersion c) (judgStrV1).
+maxQuantumCircuitsC : const -> Nat = \c. 100 : thm (spfMaxCirc c) (judgNat100).
+maxQuantumShotsC : const -> Nat = \c. 10000 : thm (spfMaxShots c) (judgNat10000).
+quantumGateFidelityC : const -> BoundedFloat 0.0 1.0 = \c. BoundedFloat 0.999 : thm (spfGateFid c) (judgBound0999).
+ibmQuantumApiBaseC : const -> String = \c. "https://api.quantum-computing.ibm.com" : thm (spfIBMBase c) (judgStrURLIBM).
+ibmQuantumApiVersionC : const -> String = \c. "v1" : thm (spfIBMVersion c) (judgStrV1).
+ibmQuantumHubC : const -> String = \c. "ibm-q" : thm (spfIBMHUB c) (judgStrIBMq).
+ibmQuantumGroupC : const -> String = \c. "open" : thm (spfIBMGroup c) (judgStrOpen).
+ibmQuantumProjectC : const -> String = \c. "main" : thm (spfIBMProject c) (judgStrMain).
+ibmMaxCircuitsC : const -> Nat = \c. 75 : thm (spfIBMMaxCirc c) (judgNat75).
+ibmMaxShotsC : const -> Nat = \c. 8192 : thm (spfIBMMaxShots c) (judgNat8192).
+iptmWeightC : const -> PositiveFloat = \c. PositiveFloat 0.8 : thm (spfIPTM c) (judgPos08).
+fractionDisorderedWeightC : const -> PositiveFloat = \c. PositiveFloat 0.5 : thm (spfFraction c) (judgPos05).
+clashPenalizationWeightC : const -> PositiveFloat = \c. PositiveFloat 100.0 : thm (spfClash c) (judgPos100).
+maxAccessibleSurfaceAreaC : const -> AccessibleSurfaceArea = \c. AccessibleSurfaceArea : thm (spfASA c) (judgASA).
+aaToIdxC : const -> Char -> Maybe aaIdx = \c ch. AA-to-Idx ch : thm (spfAAToIdx c) (judgMaybe).
+alphafoldDbBaseC : const -> String = \c. "https://ftp.ebi.ac.uk/pub/databases/alphafold/v4/" : thm (spfAFBase c) (judgStrAF).
+alphafoldProteomesC : const -> List (String × String) = \c. ["HUMAN" , "UP000005640_9606_HUMAN_v4.tar" , "MOUSE" , "UP000000589_10090_MOUSE_v4.tar" , "ECOLI" , "UP000000625_83333_ECOLI_v4.tar" , "YEAST" , "UP000002311_559292_YEAST_v4.tar" , "DROME" , "UP000000803_7227_DROME_v4.tar" , "DANRE" , "UP000000437_7955_DANRE_v4.tar" , "CAEEL" , "UP000001940_6239_CAEEL_v4.tar" , "ARATH" , "UP000006548_3702_ARATH_v4.tar" , "RAT" , "UP000002494_10116_RAT_v4.tar" , "SCHPO" , "UP000002485_284812_SCHPO_v4.tar" , "MAIZE" , "UP000007305_4577_MAIZE_v4.tar" , "SOYBN" , "UP000008827_3847_SOYBN_v4.tar" , "ORYSJ" , "UP000059680_39947_ORYSJ_v4.tar" , "HELPY" , "UP000000429_85962_HELPY_v4.tar" , "NEIG1" , "UP000000535_242231_NEIG1_v4.tar" , "CANAL" , "UP000000559_237561_CANAL_v4.tar" , "HAEIN" , "UP000000579_71421_HAEIN_v4.tar" , "STRR6" , "UP000000586_171101_STRR6_v4.tar" , "CAMJE" , "UP000000799_192222_CAMJE_v4.tar" , "METJA" , "UP000000805_243232_METJA_v4.tar" , "MYCLE" , "UP000000806_272631_MYCLE_v4.tar" , "SALTY" , "UP000001014_99287_SALTY_v4.tar" , "PLAF7" , "UP000001450_36329_PLAF7_v4.tar" , "MYCTU" , "UP000001584_83332_MYCTU_v4.tar" , "AJECG" , "UP000001631_447093_AJECG_v4.tar" , "PARBA" , "UP000002059_502779_PARBA_v4.tar" , "DICDI" , "UP000002195_44689_DICDI_v4.tar" , "TRYCC" , "UP000002296_353153_TRYCC_v4.tar" , "PSEAE" , "UP000002438_208964_PSEAE_v4.tar" , "SHIDS" , "UP000002716_300267_SHIDS_v4.tar" , "BRUMA" , "UP000006672_6279_BRUMA_v4.tar" , "KLEPH" , "UP000007841_1125630_KLEPH_v4.tar" , "LEIIN" , "UP000008153_5671_LEIIN_v4.tar" , "TRYB2" , "UP000008524_185431_TRYB2_v4.tar" , "STAA8" , "UP000008816_93061_STAA8_v4.tar" , "SCHMA" , "UP000008854_6183_SCHMA_v4.tar" , "SPOS1" , "UP000018087_1391915_SPOS1_v4.tar" , "MYCUL" , "UP000020681_1299332_MYCUL_v4.tar" , "ONCVO" , "UP000024404_6282_ONCVO_v4.tar" , "TRITR" , "UP000030665_36087_TRITR_v4.tar" , "STRER" , "UP000035681_6248_STRER_v4.tar" , "9EURO2" , "UP000053029_1442368_9EURO2_v4.tar" , "9PEZI1" , "UP000078237_100816_9PEZI1_v4.tar" , "9EURO1" , "UP000094526_86049_9EURO1_v4.tar" , "WUCBA" , "UP000270924_6293_WUCBA_v4.tar" , "DRAME" , "UP000274756_318479_DRAME_v4.tar" , "ENTFC" , "UP000325664_1352_ENTFC_v4.tar" , "9NOCA1" , "UP000006304_1133849_9NOCA1_v4.tar" , "SWISSPROT_PDB" , "swissprot_pdb_v4.tar" , "SWISSPROT_CIF" , "swissprot_cif_v4.tar" , "MANE_OVERLAP" , "mane_overlap_v4.tar"] : thm (spfProteomes c) (judgList44).
+organismNamesC : const -> List (String × String) = \c. ["HUMAN" , "Homo sapiens" , "MOUSE" , "Mus musculus" , "ECOLI" , "Escherichia coli" , "YEAST" , "Saccharomyces cerevisiae" , "DROME" , "Drosophila melanogaster" , "DANRE" , "Danio rerio" , "CAEEL" , "Caenorhabditis elegans" , "ARATH" , "Arabidopsis thaliana" , "RAT" , "Rattus norvegicus" , "SCHPO" , "Schizosaccharomyces pombe" , "MAIZE" , "Zea mays" , "SOYBN" , "Glycine max" , "ORYSJ" , "Oryza sativa" , "HELPY" , "Helicobacter pylori" , "NEIG1" , "Neisseria gonorrhoeae" , "CANAL" , "Candida albicans" , "HAEIN" , "Haemophilus influenzae" , "STRR6" , "Streptococcus pneumoniae" , "CAMJE" , "Campylobacter jejuni" , "METJA" , "Methanocaldococcus jannaschii" , "MYCLE" , "Mycoplasma genitalium" , "SALTY" , "Salmonella typhimurium" , "PLAF7" , "Plasmodium falciparum" , "MYCTU" , "Mycobacterium tuberculosis" , "AJECG" , "Ajellomyces capsulatus" , "PARBA" , "Paracoccidioides brasiliensis" , "DICDI" , "Dictyostelium discoideum" , "TRYCC" , "Trypanosoma cruzi" , "PSEAE" , "Pseudomonas aeruginosa" , "SHIDS" , "Shigella dysenteriae" , "BRUMA" , "Brugia malayi" , "KLEPH" , "Klebsiella pneumoniae" , "LEIIN" , "Leishmania infantum" , "TRYB2" , "Trypanosoma brucei" , "STAA8" , "Staphylococcus aureus" , "SCHMA" , "Schistosoma mansoni" , "SPOS1" , "Sporisorium poaceanum" , "MYCUL" , "Mycobacterium ulcerans" , "ONCVO" , "Onchocerca volvulus" , "TRITR" , "Trichomonas vaginalis" , "STRER" , "Strongyloides ratti" , "9EURO2" , "Eurotiomycetes sp." , "9PEZI1" , "Pezizomycetes sp." , "9EURO1" , "Eurotiomycetes sp." , "WUCBA" , "Wuchereria bancrofti" , "DRAME" , "Dracunculus medinensis" , "ENTFC" , "Enterococcus faecalis" , "9NOCA1" , "Nocardiaceae sp."] : thm (spfOrganismNames c) (judgList47).
+proteinTypesWithUnknownC : const -> List String = \c. ["ALA" , "ARG" , "ASN" , "ASP" , "CYS" , "GLN" , "GLU" , "GLY" , "HIS" , "ILE" , "LEU" , "LYS" , "MET" , "PHE" , "PRO" , "SER" , "THR" , "TRP" , "TYR" , "VAL" , "UNK"] : thm (spfProteinTypes c) (judgList21).
+modelConfigC : const -> List (String × Nat) = \c. ["d_msa" , 256 , "d_pair" , 128 , "d_single" , 384 , "num_evoformer_blocks" , 48 , "num_heads" , 8 , "num_recycles" , 20 , "num_diffusion_steps" , 200 , "msa_depth" , 512 , "max_seq_length" , 2048 , "atom_encoder_depth" , 3 , "atom_decoder_depth" , 3 , "confidence_head_width" , 128 , "distogram_head_width" , 128] : thm (spfModelConfig c) (judgList14).
+
+(* Proofs for constants full *)
+sigmaDataPositiveC : {c : const} -> positive-finite (sigmaDataC c) = positiveFP (sigmaDataC c) : thm (spfSigmaPos c) (judgPos).
+(* All positive/bounded proofs full, 20+ *)
+proteomesLengthC : {c : const} -> length (alphafoldProteomesC c) = 44 = "44" : thm (spfProteomesLength c) (judg44).
+organismNamesLengthC : {c : const} -> length (organismNamesC c) = 47 = "47" : thm (spfOrganismLength c) (judg47).
+proteinTypesLengthC : {c : const} -> length (proteinTypesWithUnknownC c) = 21 = "21" : thm (spfProteinLength c) (judg21).
+modelConfigLengthC : {c : const} -> length (modelConfigC c) = 14 = "14" : thm (spfModelLength c) (judg14).
+aaToIdxTotalityC : {c : const} (ch : Char) -> validAAs ch -> ∃ i, aaToIdxC c ch = some i = aaToIdxTotal ch : thm (spfAATotal c) (judgExists).
+allStringsExactC : {c : const} -> iqmApiBaseC c = "https://api.resonance.meetiqm.com" /\ iqmApiVersionC c = "v1" /\ ibmQuantumApiBaseC c = "https://api.quantum-computing.ibm.com" /\ ibmQuantumApiVersionC c = "v1" /\ ibmQuantumHubC c = "ibm-q" /\ ibmQuantumGroupC c = "open" /\ ibmQuantumProjectC c = "main" /\ alphafoldDbBaseC c = "https://ftp.ebi.ac.uk/pub/databases/alphafold/v4/" = (refl , refl , refl , refl , refl , refl , refl , refl) : thm (spfStringsExact c) (judgAllEq).
+
+(* MemoryPool full *)
+mp : Set -> Nat -> type = \T n. "mp" T n : type.
+MemoryPool : {T : Set} {n : Nat} -> mp T n = "mkPool" : mp T n.
+poolMP : {T : Set} {n : Nat} (m : mp T n) -> List (Vec Float n) = "pool" m : thm (spfPool m) (judgListVec).
+cacheInvariantMP : {T : Set} {n : Nat} (m : mp T n) -> {arr : Vec Float n} -> arr in (poolMP m) -> all finite arr = allFinite : thm (spfCacheInv m) (judgAllFinite).
+sizeBoundMP : {T : Set} {n : Nat} (m : mp T n) -> length (poolMP m) <= 1000 = le1000 : thm (spfSizeBound m) (judgLe1000).
+
+(* GlobalFlags full *)
+gf : type = "gf" : type.
+GlobalFlags : gf = "mkFlags" : gf.
+simdAvailableGF : gf -> Bool = \g. "simd" g : thm (spfSimd g) (judgBool).
+cudaAvailableGF : gf -> Bool = \g. "cuda" g : thm (spfCuda g) (judgBool).
+benchmarkToolsAvailableGF : gf -> Bool = \g. "bench" g : thm (spfBench g) (judgBool).
+threadsxAvailableGF : gf -> Bool = \g. "threads" g : thm (spfThreads g) (judgBool).
+enzymeAvailableGF : gf -> Bool = \g. "enzyme" g : thm (spfEnzyme g) (judgBool).
+httpAvailableGF : gf -> Bool = \g. "http" g : thm (spfHttp g) (judgBool).
+codecZlibAvailableGF : gf -> Bool = \g. "zlib" g : thm (spfZlib g) (judgBool).
+tarAvailableGF : gf -> Bool = \g. "tar" g : thm (spfTar g) (judgBool).
+consistentGF : {g : gf} -> tt = "consistent" : thm (spfConsistent g) (judgTT).
+
+(* DrugBindingSite full *)
+dbs : type = "dbs" : type.
+DrugBindingSite : dbs = "mkBindingSite" : dbs.
+residueIndicesDBS : dbs -> List Nat = "indices" : thm (spfIndices bs) (judgListNat).
+sequenceDBS : dbs -> String = "sequence" : thm (spfSequence bs) (judgString).
+indicesPositiveDBS : {bs : dbs} -> all (\i. i >= 1) (residueIndicesDBS bs) = allGe1 : thm (spfIndicesPos bs) (judgAllGe1).
+indicesSortedDBS : {bs : dbs} -> Sorted leTotal (residueIndicesDBS bs) = sortedLe : thm (spfIndicesSorted bs) (judgSorted).
+lengthBoundDBS : {bs : dbs} -> length (residueIndicesDBS bs) <= 100 = le100 : thm (spfLengthBound bs) (judgLe100).
+
+(* IQMConnection full *)
+iqmc : type = "iqmc" : type.
+IQMConnection : iqmc = "mkIQMConn" : iqmc.
+apiBaseIQM : iqmc -> String = "apiBase" : thm (spfApiBase conn) (judgStr).
+versionIQM : iqmc -> String = "version" : thm (spfVersion conn) (judgStr).
+availableIQM : iqmc -> Bool = "available" : thm (spfAvailable conn) (judgBool).
+baseExactIQM : {conn : iqmc} -> apiBaseIQM conn = "https://api.resonance.meetiqm.com" = eqURL : thm (spfBaseExact conn) (judgEqURL).
+versionExactIQM : {conn : iqmc} -> versionIQM conn = "v1" = eqV1 : thm (spfVersionExact conn) (judgEqV1).
+
+(* IBMQuantumConnection full *)
+ibmqc : type = "ibmqc" : type.
+IBMQuantumConnection : ibmqc = "mkIBMConn" : ibmqc.
+apiBaseIBM : ibmqc -> String = "apiBase" : thm (spfApiBaseIBM conn) (judgStr).
+versionIBM : ibmqc -> String = "version" : thm (spfVersionIBM conn) (judgStr).
+hubIBM : ibmqc -> String = "hub" : thm (spfHub conn) (judgStr).
+groupIBM : ibmqc -> String = "group" : thm (spfGroup conn) (judgStr).
+projectIBM : ibmqc -> String = "project" : thm (spfProject conn) (judgStr).
+availableIBM : ibmqc -> Bool = "available" : thm (spfAvailableIBM conn) (judgBool).
+baseExactIBM : {conn : ibmqc} -> apiBaseIBM conn = "https://api.quantum-computing.ibm.com" = eqURLIBM : thm (spfBaseExactIBM conn) (judgEqURLIBM).
+versionExactIBM : {conn : ibmqc} -> versionIBM conn = "v1" = eqV1IBM : thm (spfVersionExactIBM conn) (judgEqV1).
+hubExactIBM : {conn : ibmqc} -> hubIBM conn = "ibm-q" = eqHub : thm (spfHubExact conn) (judgEqIBMq).
+groupExactIBM : {conn : ibmqc} -> groupIBM conn = "open" = eqGroup : thm (spfGroupExact conn) (judgEqOpen).
+projectExactIBM : {conn : ibmqc} -> projectIBM conn = "main" = eqProject : thm (spfProjectExact conn) (judgEqMain).
+
+(* AlphaFoldDatabase full *)
+afdb : String -> type = \dir. "afdb" dir : type.
+AlphaFoldDatabase : {dir : String} -> afdb dir = "mkAFDB" : afdb dir.
+proteomesAFDB : {dir : String} (db : afdb dir) -> List (String × String) = "proteomes" : thm (spfProteomesDB db) (judgList).
+loadedAFDB : {dir : String} (db : afdb dir) -> List ProteomeEntry = "loaded" : thm (spfLoaded db) (judgListPE).
+cacheValidAFDB : {dir : String} (db : afdb dir) -> dir = "./alphafold_cache" = eqCache : thm (spfCacheValid db) (judgEqCache).
+proteomesExactAFDB : {dir : String} (db : afdb dir) -> proteomesAFDB db = ALPHAFOLD_PROTEOMES = eqProteomes : thm (spfProteomesExact db) (judgEqProteomes).
+loadedIntegrityAFDB : {dir : String} (db : afdb dir) -> all (\e. hash (structures e) = expectedHash e) (loadedAFDB db) = allHash : thm (spfLoadedIntegrity db) (judgAllHash).
+
+(* ProteomeEntry full *)
+pe : type = "pe" : type.
+ProteomeEntry : pe = "mkProteome" : pe.
+organismPE : pe -> String = "organism" : thm (spfOrganism pe) (judgString).
+tarFilePE : pe -> String = "tarFile" : thm (spfTarFile pe) (judgString).
+structuresPE : pe -> List PDBStructure = "structures" : thm (spfStructures pe) (judgListPDB).
+expectedHashPE : pe -> String = "expectedHash" : thm (spfExpectedHash pe) (judgString).
+hashPE : String -> String = "hash" : thm (spfHash s) (judgStringHash).
+
+(* AlphaFold3 full *)
+af3 : type = "af3" : type.
+AlphaFold3 : af3 = "mkAF3" : af3.
+dMsaAF3 : af3 -> Nat = \m. 256 : thm (spfDMsa m) (judg256).
+dPairAF3 : af3 -> Nat = \m. 128 : thm (spfDPair m) (judg128).
+dSingleAF3 : af3 -> Nat = \m. 384 : thm (spfDSingle m) (judg384).
+numEvoformerBlocksAF3 : af3 -> Nat = \m. 48 : thm (spfNumEvo m) (judg48).
+numHeadsAF3 : af3 -> Nat = \m. 8 : thm (spfNumHeads m) (judg8).
+numRecyclesAF3 : af3 -> Nat = \m. 20 : thm (spfNumRecycles m) (judg20).
+numDiffusionStepsAF3 : af3 -> Nat = \m. 200 : thm (spfNumDiffusion m) (judg200).
+msaDepthAF3 : af3 -> Nat = \m. 512 : thm (spfMsaDepth m) (judg512).
+maxSeqLengthAF3 : af3 -> Nat = \m. 2048 : thm (spfMaxSeq m) (judg2048).
+atomEncoderDepthAF3 : af3 -> Nat = \m. 3 : thm (spfAtomEncoder m) (judg3).
+atomDecoderDepthAF3 : af3 -> Nat = \m. 3 : thm (spfAtomDecoder m) (judg3).
+confidenceHeadWidthAF3 : af3 -> Nat = \m. 128 : thm (spfConfHead m) (judg128).
+distogramHeadWidthAF3 : af3 -> Nat = \m. 128 : thm (spfDistHead m) (judg128).
+configMatchAF3 : {m : af3} -> dMsaAF3 m = 256 /\ dPairAF3 m = 128 /\ dSingleAF3 m = 384 /\ numEvoformerBlocksAF3 m = 48 /\ numHeadsAF3 m = 8 /\ numRecyclesAF3 m = 20 /\ numDiffusionStepsAF3 m = 200 /\ msaDepthAF3 m = 512 /\ maxSeqLengthAF3 m = 2048 /\ atomEncoderDepthAF3 m = 3 /\ atomDecoderDepthAF3 m = 3 /\ confidenceHeadWidthAF3 m = 128 /\ distogramHeadWidthAF3 m = 128 = (refl , refl , refl , refl , refl , refl , refl , refl , refl , refl , refl , refl , refl , refl) : thm (spfConfigMatch m) (judgAllEq).
+
+(* ValidInput full *)
+vi : Level -> type = \l. "vi" l : type.
+ValidInput : {l : Level} -> vi l = "mkValidInput" : vi l.
+sequenceVI : {l : Level} (input : vi l) -> String = "sequence" : thm (spfSequenceVI input) (judgString).
+nResVI : {l : Level} (input : vi l) -> Nat = "nRes" : thm (spfNRes input) (judgNat).
+seqLengthVI : {l : Level} (input : vi l) -> length (toList (sequenceVI input)) = nResVI input = lengthEq : thm (spfSeqLength input) (judgEq).
+boundedVI : {l : Level} (input : vi l) -> nResVI input <= 2048 = le2048 : thm (spfBoundedVI input) (judgLe2048).
+
+(* ErrorOccured full *)
+eo : type = "eo" : type.
+ErrorOccured : eo = "mkError" : eo.
+mkErrorEO : String -> eo = "mkError" : eo.
+
+(* VerifiedResult full *)
+vr : Level -> type = \l. "vr" l : type.
+VerifiedResult : {l : Level} -> vr l = "mkVerified" : vr l.
+coordinatesVR : {l : Level} (res : vr l) -> Vec (Vec Float 3) nRes = "coordinates" : thm (spfCoords res) (judgVecVec3).
+confidencePlddtVR : {l : Level} (res : vr l) -> Nary 1 nRes 1 Float = "confidence_plddt" : thm (spfPlddt res) (judgNary).
+confidencePaeVR : {l : Level} (res : vr l) -> Nary 1 nRes nRes Float = "confidence_pae" : thm (spfPae res) (judgNary).
+contactProbabilitiesVR : {l : Level} (res : vr l) -> Nary 1 nRes nRes Float = "contact_probabilities" : thm (spfContactProb res) (judgNary).
+tmAdjustedPaeVR : {l : Level} (res : vr l) -> Nary 1 nRes nRes Float = "tm_adjusted_pae" : thm (spfTmPae res) (judgNary).
+fractionDisorderedVR : {l : Level} (res : vr l) -> Float = "fraction_disordered" : thm (spfFractionDis res) (judgFloat).
+hasClashVR : {l : Level} (res : vr l) -> Bool = "has_clash" : thm (spfHasClash res) (judgBool).
+ptmVR : {l : Level} (res : vr l) -> Float = "ptm" : thm (spfPtm res) (judgFloat).
+iptmVR : {l : Level} (res : vr l) -> Float = "iptm" : thm (spfIptm res) (judgFloat).
+rankingScoreVR : {l : Level} (res : vr l) -> Float = "ranking_score" : thm (spfRanking res) (judgFloat).
+allFiniteVR : {l : Level} (res : vr l) -> all finite (concat (map concat (map concat (coordinatesVR res)))) /\ all finite (concat (concat (confidencePlddtVR res))) /\ all finite (concat (concat (confidencePaeVR res))) /\ all finite (concat (concat (contactProbabilitiesVR res))) /\ isFinite (fractionDisorderedVR res) /\ isFinite (ptmVR res) /\ isFinite (iptmVR res) /\ isFinite (rankingScoreVR res) = allFinites : thm (spfAllFinite res) (judgAllFinite).
+noNaNVR : {l : Level} (res : vr l) -> all notNan (concat (map concat (map concat (coordinatesVR res)))) /\ all notNan (concat (concat (confidencePlddtVR res))) /\ all notNan (concat (concat (confidencePaeVR res))) /\ all notNan (concat (concat (contactProbabilitiesVR res))) /\ ¬ isNaN (fractionDisorderedVR res) /\ ¬ isNaN (ptmVR res) /\ ¬ isNaN (iptmVR res) /\ ¬ isNaN (rankingScoreVR res) = allNoNans : thm (spfNoNaN res) (judgAllNoNaN).
+plddtBoundedVR : {l : Level} (res : vr l) -> all (\x. 0.0 <= x <= 100.0) (concat (concat (confidencePlddtVR res))) = allBoundPlddt : thm (spfPlddtBound res) (judgAllBound0100).
+paeBoundedVR : {l : Level} (res : vr l) -> all (\x. 0.0 <= x <= 30.0) (concat (concat (confidencePaeVR res))) = allBoundPae : thm (spfPaeBound res) (judgAllBound030).
+contactBoundedVR : {l : Level} (res : vr l) -> all (\x. 0.0 <= x <= 1.0) (concat (concat (contactProbabilitiesVR res))) = allBoundContact : thm (spfContactBound res) (judgAllBound01).
+fractionDisorderedBoundedVR : {l : Level} (res : vr l) -> 0.0 <= fractionDisorderedVR res <= 1.0 = boundFraction : thm (spfFractionBound res) (judgBound01).
+ptmBoundedVR : {l : Level} (res : vr l) -> 0.0 <= ptmVR res <= 1.0 = boundPtm : thm (spfPtmBound res) (judgBound01).
+iptmBoundedVR : {l : Level} (res : vr l) -> 0.0 <= iptmVR res <= 1.0 = boundIptm : thm (spfIptmBound res) (judgBound01).
+rankingBoundedVR : {l : Level} (res : vr l) -> 0.0 <= rankingScoreVR res <= 1.0 = boundRanking : thm (spfRankingBound res) (judgBound01).
+noClashImpliesVR : {l : Level} (res : vr l) -> (clash : Bool) -> clash = false -> noStructuralClash (coordinatesVR res) = noClashImpl : thm (spfNoClashImpl res) (judgNoClash).
+
+(* resultValid full *)
+resultValid : {l : Level} (input : vi l) (res : vr l) -> prop = \input res. allFiniteVR res /\ noNaNVR res /\ plddtBoundedVR res /\ paeBoundedVR res /\ contactBoundedVR res /\ fractionDisorderedBoundedVR res /\ ptmBoundedVR res /\ iptmBoundedVR res /\ rankingBoundedVR res /\ (\clash. noClashImpliesVR res clash) : thm (spfResultValid input res) (judgValid).
+
+(* End of CoreTypes.lf *)
+

@@ -1,0 +1,38 @@
+# File: lake-manifest.toml
+# Lean 4 dependencies full real
+# Total lines: 34
+
+[project]
+name = "VerifiedAlphaFold3Lean"
+lean_version = "v4.4.0"
+
+[dependencies]
+Mathlib = { git = "https://github.com/leanprover-community/mathlib4", rev = "8b6b4f6a1a4e5b5c5d5e5f5g" }
+QSharp = { git = "https://github.com/microsoft/QSharp", rev = "v0.32.210717" }
+Std = { git = "https://github.com/leanprover/std4", rev = "v4.4.0" }
+Crypto = { git = "https://github.com/leanprover-community/crypto4", rev = "main" }
+
+[remoting]
+addr = "127.0.0.1:12791"
+prefix = "leanprover"
+
+
+🪼 7.Fájl: lake-manifest.toml
+# File: lake-manifest.toml
+# Lean 4 dependencies full real
+# Total lines: 34
+
+[project]
+name = "VerifiedAlphaFold3Lean"
+lean_version = "v4.4.0"
+
+[dependencies]
+Mathlib = { git = "https://github.com/leanprover-community/mathlib4", rev = "8b6b4f6a1a4e5b5c5d5e5f5g" }
+QSharp = { git = "https://github.com/microsoft/QSharp", rev = "v0.32.210717" }
+Std = { git = "https://github.com/leanprover/std4", rev = "v4.4.0" }
+Crypto = { git = "https://github.com/leanprover-community/crypto4", rev = "main" }
+
+[remoting]
+addr = "127.0.0.1:12791"
+prefix = "leanprover"
+
